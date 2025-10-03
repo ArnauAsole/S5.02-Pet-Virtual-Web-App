@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { auth } from "@/lib/auth"
@@ -7,15 +9,21 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Sparkles, Shield, BookOpen, Users } from "lucide-react"
 import Link from "next/link"
+import { useSound } from "@/hooks/use-sound"
 
 export default function HomePage() {
   const router = useRouter()
+  const { play: playSwordClash } = useSound("/sounds/sword-clash.mp3")
 
   useEffect(() => {
     if (auth.isAuthed()) {
       router.push("/dashboard")
     }
   }, [router])
+
+  const handleAuthClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    playSwordClash()
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -29,10 +37,14 @@ export default function HomePage() {
           </p>
           <div className="flex gap-4 justify-center">
             <Button asChild size="lg">
-              <Link href="/login">Iniciar Sesión</Link>
+              <Link href="/login" onClick={handleAuthClick}>
+                Iniciar Sesión
+              </Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link href="/register">Registrarse</Link>
+              <Link href="/register" onClick={handleAuthClick}>
+                Registrarse
+              </Link>
             </Button>
           </div>
         </div>
@@ -97,7 +109,9 @@ export default function HomePage() {
             </CardHeader>
             <CardContent>
               <Button asChild size="lg" className="w-full md:w-auto">
-                <Link href="/register">Crear Cuenta Gratis</Link>
+                <Link href="/register" onClick={handleAuthClick}>
+                  Crear Cuenta Gratis
+                </Link>
               </Button>
             </CardContent>
           </Card>
