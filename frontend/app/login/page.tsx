@@ -19,24 +19,23 @@ type LoginFormData = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
   const router = useRouter()
+  const form = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  })
 
   useEffect(() => {
+    console.log("[v0] LoginPage mounted, checking auth status")
     if (auth.isAuthed()) {
+      console.log("[v0] User already authenticated, redirecting to dashboard")
       router.push("/dashboard")
     }
   }, [router])
 
-  const form = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  })
-
   const onSubmit = async (data: LoginFormData) => {
     try {
+      console.log("[v0] Sending login request with data:", { email: data.email, password: "***" })
       const response = await AuthAPI.login(data)
+      console.log("[v0] Login response received:", { hasToken: !!response.token })
 
       auth.setToken(response.token)
       auth.setUser({
@@ -45,9 +44,17 @@ export default function LoginPage() {
         email: data.email,
       })
 
+      console.log("[v0] Token and user saved to localStorage and cookies")
+      console.log("[v0] Token in localStorage:", !!auth.getToken())
+      console.log("[v0] Cookies:", document.cookie)
+
       toast.success("Sesión iniciada correctamente")
+
+      console.log("[v0] Attempting to redirect to /dashboard")
       router.push("/dashboard")
+      console.log("[v0] router.push called")
     } catch (err: any) {
+      console.error("[v0] Login error:", err)
       const message = err?.response?.data?.message || "Error de autenticación"
       toast.error(message)
     }

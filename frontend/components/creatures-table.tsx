@@ -20,7 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Pencil, Trash2, Eye, Plus, Search } from "lucide-react"
+import { Pencil, Trash2, Eye, Plus, Search, Swords, Dumbbell } from "lucide-react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { useDebounce } from "@/hooks/use-debounce"
@@ -28,7 +28,12 @@ import { useDebounce } from "@/hooks/use-debounce"
 const RACES = ["Elf", "Orc", "Dwarf", "Hobbit", "Man", "Ent", "Maiar", "Other"]
 const ALIGNMENTS = ["GOOD", "EVIL", "NEUTRAL"]
 
-export function CreaturesTable() {
+interface CreaturesTableProps {
+  onTrain?: (creatureId: number) => void
+  onBattle?: (creatureId: number) => void
+}
+
+export function CreaturesTable({ onTrain, onBattle }: CreaturesTableProps) {
   const router = useRouter()
   const queryClient = useQueryClient()
   const isAdmin = auth.isAdmin()
@@ -89,7 +94,7 @@ export function CreaturesTable() {
   return (
     <div className="space-y-4">
       {/* Filters Bar */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between bg-background/80 backdrop-blur-md p-4 rounded-lg border">
         <div className="flex flex-1 gap-2">
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -139,7 +144,7 @@ export function CreaturesTable() {
         </div>
 
         {isAdmin && (
-          <Button onClick={() => router.push("/creatures/new")}>
+          <Button onClick={() => router.push("/dashboard/creatures/new")}>
             <Plus className="mr-2 h-4 w-4" />
             Nueva Criatura
           </Button>
@@ -147,7 +152,7 @@ export function CreaturesTable() {
       </div>
 
       {/* Table */}
-      <div className="rounded-md border">
+      <div className="rounded-md border bg-background/80 backdrop-blur-md">
         <Table>
           <TableHeader>
             <TableRow>
@@ -166,19 +171,19 @@ export function CreaturesTable() {
                   Cargando...
                 </TableCell>
               </TableRow>
-            ) : data?.content.length === 0 ? (
+            ) : !data || !data.content || data.content.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-8">
                   <p className="text-muted-foreground">No se encontraron criaturas</p>
                   {isAdmin && (
-                    <Button variant="link" onClick={() => router.push("/creatures/new")} className="mt-2">
+                    <Button variant="link" onClick={() => router.push("/dashboard/creatures/new")} className="mt-2">
                       Crear la primera criatura
                     </Button>
                   )}
                 </TableCell>
               </TableRow>
             ) : (
-              data?.content.map((creature) => (
+              data.content.map((creature) => (
                 <TableRow key={creature.id}>
                   <TableCell className="font-medium">{creature.name}</TableCell>
                   <TableCell>{creature.race}</TableCell>
@@ -208,19 +213,35 @@ export function CreaturesTable() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="icon" onClick={() => router.push(`/creatures/${creature.id}`)}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => router.push(`/dashboard/creatures/${creature.id}`)}
+                        title="Ver detalles"
+                      >
                         <Eye className="h-4 w-4" />
                       </Button>
+                      {onTrain && (
+                        <Button variant="ghost" size="icon" onClick={() => onTrain(creature.id)} title="Entrenar">
+                          <Dumbbell className="h-4 w-4 text-blue-600" />
+                        </Button>
+                      )}
+                      {onBattle && (
+                        <Button variant="ghost" size="icon" onClick={() => onBattle(creature.id)} title="Combatir">
+                          <Swords className="h-4 w-4 text-orange-600" />
+                        </Button>
+                      )}
                       {isAdmin && (
                         <>
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => router.push(`/creatures/${creature.id}/edit`)}
+                            onClick={() => router.push(`/dashboard/creatures/${creature.id}/edit`)}
+                            title="Editar"
                           >
                             <Pencil className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" onClick={() => setDeleteId(creature.id)}>
+                          <Button variant="ghost" size="icon" onClick={() => setDeleteId(creature.id)} title="Eliminar">
                             <Trash2 className="h-4 w-4 text-destructive" />
                           </Button>
                         </>
@@ -236,9 +257,9 @@ export function CreaturesTable() {
 
       {/* Pagination */}
       {data && data.totalPages > 1 && (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between bg-background/80 backdrop-blur-md p-4 rounded-lg border">
           <p className="text-sm text-muted-foreground">
-            Mostrando {data.content.length} de {data.totalElements} criaturas
+            Mostrando {data.content?.length || 0} de {data.totalElements} criaturas
           </p>
           <div className="flex gap-2">
             <Button

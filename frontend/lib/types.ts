@@ -1,16 +1,37 @@
-export type Alignment = "GOOD" | "EVIL" | "NEUTRAL"
-export type Race = "Elf" | "Orc" | "Dwarf" | "Hobbit" | "Man" | "Ent" | "Maiar" | "Other"
-
 export interface Creature {
   id: number
   name: string
-  race: Race
-  habitat?: string
-  abilities?: string[]
-  alignment: Alignment
-  lore?: string
-  createdAt: string
-  updatedAt: string
+  race: string // Human, Elf, Dwarf, Orc, Maia, etc.
+  color: string
+  level: number
+  xp: number
+  attackBase: number
+  defenseBase: number
+  maxHealth: number
+  health: number
+  inCombat: boolean
+  ownerId: number
+  accessories: string[]
+}
+
+export interface CreateCreatureData {
+  name: string
+  race: string
+  color: string
+  maxHealth: number
+  attackBase: number
+  defenseBase: number
+  accessories: string[]
+}
+
+export interface UpdateCreatureData {
+  name: string
+  race: string
+  color: string
+  maxHealth: number
+  attackBase: number
+  defenseBase: number
+  accessories: string[]
 }
 
 export interface PaginatedResponse<T> {
@@ -22,16 +43,6 @@ export interface PaginatedResponse<T> {
   totalElements: number
   totalPages: number
   last: boolean
-}
-
-export interface CreatureFilters {
-  page?: number
-  size?: number
-  sort?: string
-  name?: string
-  race?: string
-  habitat?: string
-  alignment?: Alignment
 }
 
 export interface AuthResponse {

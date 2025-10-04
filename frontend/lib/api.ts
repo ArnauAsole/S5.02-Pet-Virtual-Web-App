@@ -1,9 +1,8 @@
 import axios from "axios"
-import type { Creature, PaginatedResponse, CreatureFilters, AuthResponse } from "./types"
-import type { CreatureFormData } from "./schemas"
+import type { Creature, AuthResponse, CreateCreatureData, UpdateCreatureData } from "./types"
 
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: "http://localhost:8080",
   withCredentials: false,
 })
 
@@ -56,18 +55,8 @@ export const AuthAPI = {
 }
 
 export const CreaturesAPI = {
-  list: async (filters?: CreatureFilters): Promise<PaginatedResponse<Creature>> => {
-    const params = new URLSearchParams()
-
-    if (filters?.page !== undefined) params.append("page", filters.page.toString())
-    if (filters?.size !== undefined) params.append("size", filters.size.toString())
-    if (filters?.sort) params.append("sort", filters.sort)
-    if (filters?.name) params.append("name", filters.name)
-    if (filters?.race) params.append("race", filters.race)
-    if (filters?.habitat) params.append("habitat", filters.habitat)
-    if (filters?.alignment) params.append("alignment", filters.alignment)
-
-    const response = await api.get<PaginatedResponse<Creature>>("/creatures", { params })
+  list: async (): Promise<Creature[]> => {
+    const response = await api.get<Creature[]>("/creatures")
     return response.data
   },
 
@@ -76,17 +65,32 @@ export const CreaturesAPI = {
     return response.data
   },
 
-  create: async (data: CreatureFormData): Promise<Creature> => {
+  create: async (data: CreateCreatureData): Promise<Creature> => {
     const response = await api.post<Creature>("/creatures", data)
     return response.data
   },
 
-  update: async (id: number, data: CreatureFormData): Promise<Creature> => {
+  update: async (id: number, data: UpdateCreatureData): Promise<Creature> => {
     const response = await api.put<Creature>(`/creatures/${id}`, data)
     return response.data
   },
 
   delete: async (id: number): Promise<void> => {
     await api.delete(`/creatures/${id}`)
+  },
+
+  train: async (id: number): Promise<Creature> => {
+    const response = await api.post<Creature>(`/creatures/${id}/train`)
+    return response.data
+  },
+
+  rest: async (id: number): Promise<Creature> => {
+    const response = await api.post<Creature>(`/creatures/${id}/rest`)
+    return response.data
+  },
+
+  combat: async (attackerId: number, defenderId: number): Promise<Creature> => {
+    const response = await api.post<Creature>(`/creatures/${attackerId}/combat/${defenderId}`)
+    return response.data
   },
 }

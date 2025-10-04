@@ -15,6 +15,7 @@ export const auth = {
   setToken(token: string) {
     if (typeof window === "undefined") return
     localStorage.setItem(TOKEN_KEY, token)
+    document.cookie = `jwt=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`
   },
 
   getUser(): AuthUser | null {
@@ -41,6 +42,7 @@ export const auth = {
     if (typeof window === "undefined") return
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem("user")
+    document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
   },
 
   isAuthed(): boolean {

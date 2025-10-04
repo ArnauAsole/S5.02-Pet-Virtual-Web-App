@@ -2,13 +2,18 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 export function middleware(request: NextRequest) {
-  // Proteger rutas del dashboard
+  console.log("[v0] Middleware called for:", request.nextUrl.pathname)
+
   if (request.nextUrl.pathname.startsWith("/dashboard")) {
-    const token = request.cookies.get("token")?.value
+    const token = request.cookies.get("jwt")?.value
+    console.log("[v0] Dashboard access attempt, token present:", !!token)
 
     if (!token) {
-      return NextResponse.redirect(new URL("/", request.url))
+      console.log("[v0] No token found, redirecting to /login")
+      return NextResponse.redirect(new URL("/login", request.url))
     }
+
+    console.log("[v0] Token found, allowing access to dashboard")
   }
 
   return NextResponse.next()

@@ -2,18 +2,24 @@
 
 import type React from "react"
 
-import { useEffect } from "react"
+import { useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { auth } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Sparkles, Shield, BookOpen, Users } from "lucide-react"
 import Link from "next/link"
-import { useSound } from "@/hooks/use-sound"
 
 export default function HomePage() {
   const router = useRouter()
-  const { play: playSwordClash } = useSound("/sounds/sword-clash.mp3")
+
+  const playSwordClash = useCallback(() => {
+    const audio = new Audio("/sounds/sword-clash.mp3")
+    audio.volume = 0.5
+    audio.play().catch((error) => {
+      console.error("Error playing sound:", error)
+    })
+  }, [])
 
   useEffect(() => {
     if (auth.isAuthed()) {
