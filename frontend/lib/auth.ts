@@ -6,6 +6,23 @@ export interface AuthUser {
   email: string
 }
 
+function decodeJWT(token: string): { email: string; roles: string[]; sub: string } | null {
+  try {
+    const base64Url = token.split(".")[1]
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/")
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join(""),
+    )
+    return JSON.parse(jsonPayload)
+  } catch (error) {
+    console.error("[v0] Error decoding JWT:", error)
+    return null
+  }
+}
+
 export const auth = {
   getToken(): string | null {
     if (typeof window === "undefined") return null
@@ -16,6 +33,17 @@ export const auth = {
     if (typeof window === "undefined") return
     localStorage.setItem(TOKEN_KEY, token)
     document.cookie = `jwt=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`
+
+    // Decode JWT to extract user info
+    const decoded = decodeJWT(token)
+    if (decoded) {
+      const user: AuthUser = {
+        token,
+        email: decoded.email || decoded.sub,
+        roles: decoded.roles || [],
+      }
+      this.setUser(user)
+    }
   },
 
   getUser(): AuthUser | null {

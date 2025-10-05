@@ -14,7 +14,7 @@ export default function HomePage() {
   const router = useRouter()
 
   const playSwordClash = useCallback(() => {
-    const audio = new Audio("/sounds/sword-clash.mp3")
+    const audio = new Audio("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Efecto%20de%20sonido%20de%20katana%20desenfundada%20-%20Sound%20Effects%20%26%20Music%20%28youtube%29-fyrDOqylrPPof3Fge4Ua0G9Ij47LwX.mp3")
     audio.volume = 0.5
     audio.play().catch((error) => {
       console.error("Error playing sound:", error)

@@ -1,5 +1,5 @@
 import axios from "axios"
-import type { Creature, AuthResponse, CreateCreatureData, UpdateCreatureData } from "./types"
+import type { Creature, AuthResponse, CreateCreatureData, UpdateCreatureData, User } from "./types"
 
 const api = axios.create({
   baseURL: "http://localhost:8080",
@@ -92,5 +92,27 @@ export const CreaturesAPI = {
   combat: async (attackerId: number, defenderId: number): Promise<Creature> => {
     const response = await api.post<Creature>(`/creatures/${attackerId}/combat/${defenderId}`)
     return response.data
+  },
+}
+
+export const AdminAPI = {
+  // Users management
+  listUsers: async (): Promise<User[]> => {
+    const response = await api.get<User[]>("/admin/users")
+    return response.data
+  },
+
+  deleteUser: async (id: number): Promise<void> => {
+    await api.delete(`/admin/users/${id}`)
+  },
+
+  // All creatures management
+  listAllCreatures: async (): Promise<Creature[]> => {
+    const response = await api.get<Creature[]>("/admin/creatures")
+    return response.data
+  },
+
+  deleteCreature: async (id: number): Promise<void> => {
+    await api.delete(`/admin/creatures/${id}`)
   },
 }

@@ -8,7 +8,7 @@ import { CreateCreatureModal } from "@/components/create-creature-modal"
 import { TrainCreatureModal } from "@/components/train-creature-modal"
 import { BattleArena } from "@/components/battle-arena"
 import { Button } from "@/components/ui/button"
-import { LogOut, Plus, Swords } from "lucide-react"
+import { LogOut, Plus, Swords, Shield } from "lucide-react"
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -39,6 +39,7 @@ export default function DashboardPage() {
   }
 
   const user = auth.getUser()
+  const isAdmin = auth.isAdmin()
 
   return (
     <div
@@ -56,7 +57,7 @@ export default function DashboardPage() {
             <div>
               <h1 className="text-2xl font-bold">Tolkien Creatures</h1>
               <p className="text-sm text-muted-foreground">
-                Bienvenido, {user?.username} {auth.isAdmin() && "(Admin)"}
+                Bienvenido, {user?.email} {isAdmin && <span className="text-amber-600 font-semibold">(Admin)</span>}
               </p>
             </div>
             <Button variant="outline" onClick={handleLogout}>
@@ -76,6 +77,12 @@ export default function DashboardPage() {
               <Swords className="h-5 w-5" />
               Arena de Combate
             </Button>
+            {isAdmin && (
+              <Button onClick={() => router.push("/dashboard/admin")} size="lg" variant="outline" className="gap-2">
+                <Shield className="h-5 w-5" />
+                Panel de Administración
+              </Button>
+            )}
           </div>
         </div>
 
