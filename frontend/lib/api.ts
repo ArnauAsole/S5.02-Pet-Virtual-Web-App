@@ -1,5 +1,5 @@
 import axios from "axios"
-import type { Creature, AuthResponse, CreateCreatureData, UpdateCreatureData, User } from "./types"
+import type { Creature, AuthResponse, CreateCreatureData, UpdateCreatureData, User, PaginatedResponse } from "./types"
 
 const api = axios.create({
   baseURL: "http://localhost:8080",
@@ -7,7 +7,6 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  console.log("[v0] API Request:", config.method?.toUpperCase(), config.url)
   const token = localStorage.getItem("jwt")
   if (token) {
     config.headers = config.headers ?? {}
@@ -18,18 +17,9 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (r) => {
-    console.log("[v0] API Response:", r.status, r.config.url)
     return r
   },
   (error) => {
-    console.error("[v0] API Error:", {
-      url: error.config?.url,
-      method: error.config?.method,
-      status: error.response?.status,
-      data: error.response?.data,
-      message: error.message,
-    })
-
     if (error?.response?.status === 401) {
       localStorage.removeItem("jwt")
       if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
@@ -42,22 +32,58 @@ api.interceptors.response.use(
 
 export const AuthAPI = {
   register: async (data: { email: string; password: string }) => {
-    console.log("[v0] Sending register request with data:", data)
     const response = await api.post("/auth/register", data)
     return response.data
   },
 
   login: async (data: { email: string; password: string }): Promise<AuthResponse> => {
-    console.log("[v0] Sending login request with data:", data)
     const response = await api.post<AuthResponse>("/auth/login", data)
     return response.data
   },
 }
 
 export const CreaturesAPI = {
-  list: async (): Promise<Creature[]> => {
-    const response = await api.get<Creature[]>("/creatures")
-    return response.data
+  list: async (params?: any): Promise<PaginatedResponse<Creature>> => {
+    try {
+      const response = await api.get<any>("/creatures", { params })
+
+      if (Array.isArray(response.data)) {
+        return {
+          content: response.data,
+          pageable: {
+            pageNumber: 0,
+            pageSize: response.data.length,
+          },
+          totalElements: response.data.length,
+          totalPages: 1,
+          last: true,
+        }
+      }
+
+      // If backend returns paginated response, use it directly
+      if (response.data && typeof response.data === "object" && "content" in response.data) {
+        return response.data as PaginatedResponse<Creature>
+      }
+
+      // Fallback: empty response
+      return {
+        content: [],
+        pageable: { pageNumber: 0, pageSize: 0 },
+        totalElements: 0,
+        totalPages: 0,
+        last: true,
+      }
+    } catch (error) {
+      console.error("Error fetching creatures:", error)
+      // Return empty paginated response on error
+      return {
+        content: [],
+        pageable: { pageNumber: 0, pageSize: 0 },
+        totalElements: 0,
+        totalPages: 0,
+        last: true,
+      }
+    }
   },
 
   getById: async (id: number): Promise<Creature> => {
@@ -80,36 +106,44 @@ export const CreaturesAPI = {
   },
 
   train: async (id: number): Promise<Creature> => {
-    const response = await api.post<Creature>(`/creatures/${id}/train`)
+    const response = await api.put<Creature>(`/creatures/${id}/train`)
     return response.data
   },
 
   rest: async (id: number): Promise<Creature> => {
-    const response = await api.post<Creature>(`/creatures/${id}/rest`)
+    const response = await api.put<Creature>(`/creatures/${id}/rest`)
     return response.data
   },
 
   combat: async (attackerId: number, defenderId: number): Promise<Creature> => {
-    const response = await api.post<Creature>(`/creatures/${attackerId}/combat/${defenderId}`)
+    const response = await api.put<Creature>(`/creatures/${attackerId}/fight/${defenderId}`)
     return response.data
   },
 }
 
 export const AdminAPI = {
-  // Users management
   listUsers: async (): Promise<User[]> => {
-    const response = await api.get<User[]>("/admin/users")
-    return response.data
+    try {
+      const response = await api.get<User[]>("/admin/users")
+      return Array.isArray(response.data) ? response.data : []
+    } catch (error) {
+      console.error("Error fetching users:", error)
+      return []
+    }
   },
 
   deleteUser: async (id: number): Promise<void> => {
     await api.delete(`/admin/users/${id}`)
   },
 
-  // All creatures management
   listAllCreatures: async (): Promise<Creature[]> => {
-    const response = await api.get<Creature[]>("/admin/creatures")
-    return response.data
+    try {
+      const response = await api.get<Creature[]>("/admin/creatures")
+      return Array.isArray(response.data) ? response.data : []
+    } catch (error) {
+      console.error("Error fetching all creatures:", error)
+      return []
+    }
   },
 
   deleteCreature: async (id: number): Promise<void> => {

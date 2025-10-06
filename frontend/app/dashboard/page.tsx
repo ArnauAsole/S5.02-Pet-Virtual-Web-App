@@ -9,9 +9,12 @@ import { TrainCreatureModal } from "@/components/train-creature-modal"
 import { BattleArena } from "@/components/battle-arena"
 import { Button } from "@/components/ui/button"
 import { LogOut, Plus, Swords, Shield } from "lucide-react"
+import { useBackgroundMusic } from "@/hooks/use-background-music"
 
 export default function DashboardPage() {
   const router = useRouter()
+  useBackgroundMusic(true)
+
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showTrainModal, setShowTrainModal] = useState(false)
   const [showBattleArena, setShowBattleArena] = useState(false)

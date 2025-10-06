@@ -18,7 +18,6 @@ function decodeJWT(token: string): { email: string; roles: string[]; sub: string
     )
     return JSON.parse(jsonPayload)
   } catch (error) {
-    console.error("[v0] Error decoding JWT:", error)
     return null
   }
 }

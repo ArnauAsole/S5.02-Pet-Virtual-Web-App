@@ -1,12 +1,9 @@
 "use client"
-
-import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { registerSchema } from "@/lib/schemas"
 import { AuthAPI } from "@/lib/api"
-import { auth } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
@@ -14,17 +11,15 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from "sonner"
 import Link from "next/link"
 import type { z } from "zod"
+import { useBackgroundMusic } from "@/hooks/use-background-music"
+import { useSoundEffect } from "@/hooks/use-sound-effect"
 
 type RegisterFormData = z.infer<typeof registerSchema>
 
 export default function RegisterPage() {
   const router = useRouter()
-
-  useEffect(() => {
-    if (auth.isAuthed()) {
-      router.push("/dashboard")
-    }
-  }, [router])
+  useBackgroundMusic(true)
+  const playSwordClash = useSoundEffect("/sounds/sword-clash.mp3")
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -36,6 +31,8 @@ export default function RegisterPage() {
   })
 
   const onSubmit = async (data: RegisterFormData) => {
+    playSwordClash()
+
     try {
       await AuthAPI.register({
         email: data.email,
