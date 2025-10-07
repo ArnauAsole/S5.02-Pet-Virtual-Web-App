@@ -22,10 +22,14 @@ type LoginFormData = z.infer<typeof loginSchema>
 export default function LoginPage() {
   const router = useRouter()
   useBackgroundMusic(true)
-  const playSwordClash = useSoundEffect("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Efecto%20de%20sonido%20de%20katana%20desenfundada%20-%20Sound%20Effects%20%26%20Music%20%28youtube%29-fyrDOqylrPPof3Fge4Ua0G9Ij47LwX.mp3")
+  const playSwordClash = useSoundEffect("/sounds/sword-clash.mp3")
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   })
 
   useEffect(() => {
@@ -79,7 +83,7 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="tu@email.com" autoComplete="email" {...field} />
+                      <Input type="email" placeholder="tu@email.com" autoComplete="off" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -93,7 +97,7 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Contraseña</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="••••••••" autoComplete="current-password" {...field} />
+                      <Input type="password" placeholder="••••••••" autoComplete="new-password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

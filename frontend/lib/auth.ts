@@ -6,7 +6,7 @@ export interface AuthUser {
   email: string
 }
 
-function decodeJWT(token: string): { email: string; roles: string[]; sub: string } | null {
+function decodeJWT(token: string): { email: string; roles: string[]; sub: string; exp?: number } | null {
   try {
     const base64Url = token.split(".")[1]
     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/")
@@ -18,6 +18,7 @@ function decodeJWT(token: string): { email: string; roles: string[]; sub: string
     )
     return JSON.parse(jsonPayload)
   } catch (error) {
+    console.error("[v0] Error decoding JWT:", error)
     return null
   }
 }
@@ -25,17 +26,35 @@ function decodeJWT(token: string): { email: string; roles: string[]; sub: string
 export const auth = {
   getToken(): string | null {
     if (typeof window === "undefined") return null
-    return localStorage.getItem(TOKEN_KEY)
+    const token = localStorage.getItem(TOKEN_KEY)
+
+    if (token) {
+      const decoded = decodeJWT(token)
+      if (decoded?.exp) {
+        const now = Math.floor(Date.now() / 1000)
+        if (decoded.exp < now) {
+          console.log("[v0] Token expired, clearing auth")
+          this.clear()
+          return null
+        }
+      }
+    }
+
+    return token
   },
 
   setToken(token: string) {
     if (typeof window === "undefined") return
+
+    console.log("[v0] Setting token:", token.substring(0, 20) + "...")
+
     localStorage.setItem(TOKEN_KEY, token)
     document.cookie = `jwt=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`
 
     // Decode JWT to extract user info
     const decoded = decodeJWT(token)
     if (decoded) {
+      console.log("[v0] Decoded JWT - email:", decoded.email || decoded.sub, "roles:", decoded.roles)
       const user: AuthUser = {
         token,
         email: decoded.email || decoded.sub,
@@ -67,12 +86,16 @@ export const auth = {
 
   clear() {
     if (typeof window === "undefined") return
+    console.log("[v0] Clearing auth data")
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem("user")
     document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
   },
 
   isAuthed(): boolean {
-    return !!auth.getToken()
+    const token = this.getToken()
+    const isAuthed = !!token
+    console.log("[v0] isAuthed check:", isAuthed)
+    return isAuthed
   },
 }

@@ -5,6 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { CreaturesAPI } from "@/lib/api"
+import { getCreatureImageByRace } from "@/lib/utils"
 import {
   Dialog,
   DialogContent,
@@ -20,7 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
 
-const RACES = ["Elf", "Orc", "Dwarf", "Hobbit", "Man", "Ent", "Maiar", "Other"]
+const RACES = ["Men", "Elfs", "Maiar", "Hobbits", "Orcs", "Dwarfs", "Others"]
 const ALIGNMENTS = ["GOOD", "EVIL", "NEUTRAL"]
 
 interface CreateCreatureModalProps {
@@ -67,9 +68,12 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
       .map((a) => a.trim())
       .filter((a) => a.length > 0)
 
+    const imageUrl = getCreatureImageByRace(formData.race)
+
     createMutation.mutate({
       ...formData,
       abilities,
+      imageUrl,
     })
   }
 
@@ -109,6 +113,18 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
                 </SelectContent>
               </Select>
             </div>
+
+            {formData.race && (
+              <div className="col-span-2 flex justify-center">
+                <div className="relative w-32 h-32 rounded-lg overflow-hidden border-2 border-primary/20">
+                  <img
+                    src={getCreatureImageByRace(formData.race) || "/placeholder.svg"}
+                    alt={`${formData.race} preview`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="alignment">Alineamiento *</Label>

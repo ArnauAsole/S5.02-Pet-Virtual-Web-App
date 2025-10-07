@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { CreaturesAPI } from "@/lib/api"
 import {
   Dialog,
@@ -14,8 +14,10 @@ import {
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
-import { Dumbbell, Zap, Heart, Shield } from "lucide-react"
+import { Zap, Heart, Shield } from "lucide-react"
 import { toast } from "sonner"
+import { getCreatureImageByRace } from "@/lib/utils"
+import Image from "next/image"
 
 interface TrainCreatureModalProps {
   open: boolean
@@ -26,6 +28,7 @@ interface TrainCreatureModalProps {
 export function TrainCreatureModal({ open, onOpenChange, creatureId }: TrainCreatureModalProps) {
   const queryClient = useQueryClient()
   const [training, setTraining] = useState(false)
+  const [progress, setProgress] = useState(0)
 
   const { data: creature } = useQuery({
     queryKey: ["creature", creatureId],
@@ -33,23 +36,51 @@ export function TrainCreatureModal({ open, onOpenChange, creatureId }: TrainCrea
     enabled: open,
   })
 
+  const trainMutation = useMutation({
+    mutationFn: () => CreaturesAPI.train(creatureId),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["creatures"] })
+      queryClient.invalidateQueries({ queryKey: ["creature", creatureId] })
+      toast.success(`¡${creature?.name} ha completado el entrenamiento!`, {
+        description: "La criatura ha mejorado sus habilidades",
+      })
+      setTraining(false)
+      setProgress(0)
+      onOpenChange(false)
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Error al entrenar")
+      setTraining(false)
+      setProgress(0)
+    },
+  })
+
   const handleTrain = async () => {
     setTraining(true)
+    setProgress(0)
 
-    // Simulate training animation
+    // Simulate training animation with progress
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval)
+          return 100
+        }
+        return prev + 10
+      })
+    }, 200)
+
+    // Wait for animation to complete
     await new Promise((resolve) => setTimeout(resolve, 2000))
+    clearInterval(interval)
 
-    toast.success(`¡${creature?.name} ha completado el entrenamiento!`, {
-      description: "La criatura ha mejorado sus habilidades",
-    })
-
-    setTraining(false)
-    queryClient.invalidateQueries({ queryKey: ["creatures"] })
-    queryClient.invalidateQueries({ queryKey: ["creature", creatureId] })
-    onOpenChange(false)
+    // Call backend
+    trainMutation.mutate()
   }
 
   if (!creature) return null
+
+  const imageUrl = creature.imageUrl || getCreatureImageByRace(creature.race)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -61,8 +92,17 @@ export function TrainCreatureModal({ open, onOpenChange, creatureId }: TrainCrea
 
         <div className="space-y-4 py-4">
           <div className="flex items-center gap-3">
-            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-              <Dumbbell className="h-8 w-8 text-primary" />
+            <div className="relative h-16 w-16 rounded-full overflow-hidden bg-primary/10">
+              <Image
+                src={imageUrl || "/placeholder.svg"}
+                alt={creature.name}
+                fill
+                className="object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  target.src = "/mystical-griffon.png"
+                }}
+              />
             </div>
             <div className="flex-1">
               <h3 className="font-semibold">{creature.name}</h3>
@@ -73,7 +113,7 @@ export function TrainCreatureModal({ open, onOpenChange, creatureId }: TrainCrea
           {training ? (
             <div className="space-y-3">
               <p className="text-sm text-center text-muted-foreground">Entrenando...</p>
-              <Progress value={66} className="h-2" />
+              <Progress value={progress} className="h-2" />
               <div className="flex justify-center gap-2">
                 <Zap className="h-5 w-5 text-yellow-500 animate-pulse" />
                 <Heart className="h-5 w-5 text-red-500 animate-pulse" />
@@ -83,20 +123,20 @@ export function TrainCreatureModal({ open, onOpenChange, creatureId }: TrainCrea
           ) : (
             <div className="space-y-3">
               <p className="text-sm text-muted-foreground">
-                El entrenamiento mejorará las estadísticas y habilidades de {creature.name}.
+                El entrenamiento mejorará las estadísticas de {creature.name} pero consumirá puntos de vida.
               </p>
               <div className="bg-muted/50 p-3 rounded-lg space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>Fuerza</span>
-                  <span className="text-green-600">+5</span>
+                  <span>Ataque</span>
+                  <span className="text-green-600">+{Math.floor(creature.attackBase * 0.1)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span>Resistencia</span>
-                  <span className="text-green-600">+3</span>
+                  <span>Defensa</span>
+                  <span className="text-green-600">+{Math.floor(creature.defenseBase * 0.1)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span>Agilidad</span>
-                  <span className="text-green-600">+4</span>
+                  <span>Vida</span>
+                  <span className="text-red-600">-{Math.floor(creature.maxHealth * 0.1)}</span>
                 </div>
               </div>
             </div>

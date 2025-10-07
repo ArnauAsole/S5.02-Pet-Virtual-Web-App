@@ -23,15 +23,18 @@ import { Trash2, Search, Swords, Dumbbell, Heart } from "lucide-react"
 import { toast } from "sonner"
 import { useDebounce } from "@/hooks/use-debounce"
 import { useSoundEffect } from "@/hooks/use-sound-effect"
+import { getCreatureImageByRace } from "@/lib/utils"
+import Image from "next/image"
 
 const RACES = ["Elf", "Orc", "Dwarf", "Hobbit", "Man", "Ent", "Maiar", "Other"]
 
 interface CreaturesTableProps {
   onTrain?: (creatureId: number) => void
+  onRest?: (creatureId: number) => void
   onBattle?: (creatureId: number) => void
 }
 
-export function CreaturesTable({ onTrain, onBattle }: CreaturesTableProps) {
+export function CreaturesTable({ onTrain, onRest, onBattle }: CreaturesTableProps) {
   const queryClient = useQueryClient()
   const isAdmin = auth.isAdmin()
   const playSwordClash = useSoundEffect()
@@ -80,6 +83,11 @@ export function CreaturesTable({ onTrain, onBattle }: CreaturesTableProps) {
   const handleTrainClick = (id: number) => {
     playSwordClash()
     onTrain?.(id)
+  }
+
+  const handleRestClick = (id: number) => {
+    playSwordClash()
+    onRest?.(id)
   }
 
   const handleBattleClick = (id: number) => {
@@ -131,100 +139,129 @@ export function CreaturesTable({ onTrain, onBattle }: CreaturesTableProps) {
         <Table>
           <TableHeader>
             <TableRow className="border-white/10 hover:bg-white/5">
+              <TableHead className="text-gray-200">Imagen</TableHead>
               <TableHead className="text-gray-200">Nombre</TableHead>
               <TableHead className="text-gray-200">Raza</TableHead>
-              <TableHead className="text-gray-200">Alineamiento</TableHead>
-              <TableHead className="text-gray-200">Hábitat</TableHead>
-              <TableHead className="text-gray-200">Habilidades</TableHead>
+              <TableHead className="text-gray-200">Nivel</TableHead>
+              <TableHead className="text-gray-200">Salud</TableHead>
+              <TableHead className="text-gray-200">Accesorios</TableHead>
               <TableHead className="text-right text-gray-200">Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow className="border-white/10">
-                <TableCell colSpan={6} className="text-center text-gray-300">
+                <TableCell colSpan={7} className="text-center text-gray-300">
                   Cargando...
                 </TableCell>
               </TableRow>
             ) : !data || !data.content || data.content.length === 0 ? (
               <TableRow className="border-white/10">
-                <TableCell colSpan={6} className="text-center py-8 text-gray-300">
+                <TableCell colSpan={7} className="text-center py-8 text-gray-300">
                   No se encontraron criaturas
                 </TableCell>
               </TableRow>
             ) : (
-              data.content.map((creature) => (
-                <TableRow key={creature.id} className="border-white/10 hover:bg-white/5">
-                  <TableCell className="font-medium text-white">{creature.name}</TableCell>
-                  <TableCell className="text-gray-300">{creature.race}</TableCell>
-                  <TableCell className="text-gray-300">
-                    <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 border-blue-500/30">
-                      Nivel {creature.level}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-gray-300">
-                    <div className="flex items-center gap-2">
-                      <Heart className="h-4 w-4 text-red-400" />
-                      <span>
-                        {creature.health}/{creature.maxHealth}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-gray-300">
-                    {creature.accessories && creature.accessories.length > 0 ? (
-                      <div className="flex gap-1 flex-wrap">
-                        {creature.accessories.map((accessory, i) => (
-                          <Badge key={i} variant="outline" className="text-xs border-white/20 text-gray-300">
-                            {accessory}
-                          </Badge>
-                        ))}
-                      </div>
-                    ) : (
-                      "-"
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      {onTrain && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleTrainClick(creature.id)}
-                          title="Entrenar"
-                          className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10"
-                        >
-                          <Dumbbell className="h-4 w-4" />
-                        </Button>
-                      )}
-                      {onBattle && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleBattleClick(creature.id)}
-                          title="Combatir"
-                          className="text-orange-400 hover:text-orange-300 hover:bg-orange-500/10"
-                        >
-                          <Swords className="h-4 w-4" />
-                        </Button>
-                      )}
-                      {isAdmin && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => {
-                            playSwordClash()
-                            setDeleteId(creature.id)
+              data.content.map((creature) => {
+                const imageUrl = creature.imageUrl || getCreatureImageByRace(creature.race)
+                return (
+                  <TableRow key={creature.id} className="border-white/10 hover:bg-white/5">
+                    <TableCell>
+                      <div className="relative h-12 w-12 rounded-full overflow-hidden">
+                        <Image
+                          src={imageUrl || "/placeholder.svg"}
+                          alt={creature.name}
+                          fill
+                          className="object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement
+                            target.src = "/mystical-griffon.png"
                           }}
-                          title="Eliminar"
-                          className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        />
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-medium text-white">{creature.name}</TableCell>
+                    <TableCell className="text-gray-300">{creature.race}</TableCell>
+                    <TableCell className="text-gray-300">
+                      <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 border-blue-500/30">
+                        Nivel {creature.level}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-gray-300">
+                      <div className="flex items-center gap-2">
+                        <Heart className="h-4 w-4 text-red-400" />
+                        <span>
+                          {creature.health}/{creature.maxHealth}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-gray-300">
+                      {creature.accessories && creature.accessories.length > 0 ? (
+                        <div className="flex gap-1 flex-wrap">
+                          {creature.accessories.map((accessory, i) => (
+                            <Badge key={i} variant="outline" className="text-xs border-white/20 text-gray-300">
+                              {accessory}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : (
+                        "-"
                       )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        {onTrain && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleTrainClick(creature.id)}
+                            title="Entrenar"
+                            className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10"
+                          >
+                            <Dumbbell className="h-4 w-4" />
+                          </Button>
+                        )}
+                        {onRest && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleRestClick(creature.id)}
+                            title="Descansar"
+                            className="text-green-400 hover:text-green-300 hover:bg-green-500/10"
+                          >
+                            <Heart className="h-4 w-4" />
+                          </Button>
+                        )}
+                        {onBattle && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleBattleClick(creature.id)}
+                            title="Combatir"
+                            className="text-orange-400 hover:text-orange-300 hover:bg-orange-500/10"
+                          >
+                            <Swords className="h-4 w-4" />
+                          </Button>
+                        )}
+                        {isAdmin && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              playSwordClash()
+                              setDeleteId(creature.id)
+                            }}
+                            title="Eliminar"
+                            className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )
+              })
             )}
           </TableBody>
         </Table>

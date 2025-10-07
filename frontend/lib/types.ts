@@ -12,6 +12,7 @@ export interface Creature {
   inCombat: boolean
   ownerId: number
   accessories: string[]
+  imageUrl?: string
 }
 
 export interface CreateCreatureData {
@@ -22,6 +23,7 @@ export interface CreateCreatureData {
   attackBase: number
   defenseBase: number
   accessories: string[]
+  imageUrl?: string
 }
 
 export interface UpdateCreatureData {

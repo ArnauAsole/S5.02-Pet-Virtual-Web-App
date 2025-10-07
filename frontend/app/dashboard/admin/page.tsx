@@ -70,16 +70,16 @@ export default function AdminPage() {
 
   return (
     <div
-      className="min-h-screen bg-background"
+      className="min-h-screen"
       style={{
-        backgroundImage: "url(/images/backgrounds/morgothVSglorfindel.jpg)",
+        backgroundImage: "url(/images/company.jpg)",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
       }}
     >
-      <div className="min-h-screen bg-background/95 backdrop-blur-sm">
-        <header className="border-b bg-background/80 backdrop-blur-md">
+      <div className="min-h-screen bg-background/70 backdrop-blur-[2px]">
+        <header className="border-b bg-background/60 backdrop-blur-md">
           <div className="container mx-auto px-4 py-4">
             <Button variant="ghost" onClick={() => router.push("/dashboard")} className="mb-2">
               <ArrowLeft className="mr-2 h-4 w-4" />

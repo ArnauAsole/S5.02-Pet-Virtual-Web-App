@@ -11,6 +11,9 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers = config.headers ?? {}
     config.headers.Authorization = `Bearer ${token}`
+    console.log("[v0] Token attached to request:", token.substring(0, 20) + "...")
+  } else {
+    console.log("[v0] No token found in localStorage")
   }
   return config
 })
@@ -20,8 +23,15 @@ api.interceptors.response.use(
     return r
   },
   (error) => {
+    if (error?.response?.status === 403) {
+      console.log("[v0] 403 Forbidden - Token may be invalid or expired")
+      const token = localStorage.getItem("jwt")
+      console.log("[v0] Current token:", token ? token.substring(0, 20) + "..." : "none")
+    }
     if (error?.response?.status === 401) {
+      console.log("[v0] 401 Unauthorized - Clearing token and redirecting to login")
       localStorage.removeItem("jwt")
+      localStorage.removeItem("user")
       if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
         window.location.href = "/login"
       }

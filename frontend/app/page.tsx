@@ -1,160 +1,128 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import type React from "react"
+
+import { useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { auth } from "@/lib/auth"
-import { CreaturesTable } from "@/components/creatures-table"
-import { CreateCreatureModal } from "@/components/create-creature-modal"
-import { TrainCreatureModal } from "@/components/train-creature-modal"
-import { BattleArena } from "@/components/battle-arena"
 import { Button } from "@/components/ui/button"
-import { LogOut, Plus, Swords, Shield } from "lucide-react"
-import { useBackgroundMusic } from "@/hooks/use-background-music"
-import { useSoundEffect } from "@/hooks/use-sound-effect"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Sparkles, Shield, BookOpen, Users } from "lucide-react"
+import Link from "next/link"
 
-export default function DashboardPage() {
+export default function HomePage() {
   const router = useRouter()
-  useBackgroundMusic(true)
-  const playSwordClash = useSoundEffect()
 
-  const [showCreateModal, setShowCreateModal] = useState(false)
-  const [showTrainModal, setShowTrainModal] = useState(false)
-  const [showBattleArena, setShowBattleArena] = useState(false)
-  const [selectedCreatureId, setSelectedCreatureId] = useState<number | null>(null)
+  const playSwordClash = useCallback(() => {
+    const audio = new Audio("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Efecto%20de%20sonido%20de%20katana%20desenfundada%20-%20Sound%20Effects%20%26%20Music%20%28youtube%29-fyrDOqylrPPof3Fge4Ua0G9Ij47LwX.mp3")
+    audio.volume = 0.5
+    audio.play().catch((error) => {
+      console.error("Error playing sound:", error)
+    })
+  }, [])
 
   useEffect(() => {
-    if (!auth.isAuthed()) {
-      router.push("/login")
+    if (auth.isAuthed()) {
+      router.push("/dashboard")
     }
   }, [router])
 
-  const handleLogout = () => {
-    auth.clear()
-    router.push("/login")
+  const handleAuthClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    playSwordClash()
   }
-
-  const handleTrain = (creatureId: number) => {
-    setSelectedCreatureId(creatureId)
-    setShowTrainModal(true)
-  }
-
-  const handleBattle = (creatureId: number) => {
-    setSelectedCreatureId(creatureId)
-    setShowBattleArena(true)
-  }
-
-  const user = auth.getUser()
-  const isAdmin = auth.isAdmin()
 
   return (
-    <div
-      className="min-h-screen"
-      style={{
-        backgroundImage: "url(/images/backgrounds/morgothVSglorfindel.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-      }}
-    >
-      <header className="border-b border-white/10 bg-black/60 backdrop-blur-md">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-white">Tolkien Creatures</h1>
-            <p className="text-sm text-gray-200">Bienvenido, {user?.email}</p>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      {/* Hero Section */}
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center mb-16">
+          <h1 className="text-5xl md:text-6xl font-bold text-amber-900 dark:text-amber-100 mb-4">Tolkien Creatures</h1>
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Explora y gestiona las criaturas del universo de J.R.R. Tolkien. Desde los nobles Elfos hasta los temibles
+            Orcos de la Tierra Media.
+          </p>
+          <div className="flex gap-4 justify-center">
+            <Button asChild size="lg">
+              <Link href="/login" onClick={handleAuthClick}>
+                Iniciar Sesión
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link href="/register" onClick={handleAuthClick}>
+                Registrarse
+              </Link>
+            </Button>
           </div>
-          <Button
-            variant="outline"
-            onClick={handleLogout}
-            className="bg-white/10 text-white border-white/20 hover:bg-white/20"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            Cerrar sesión
-          </Button>
         </div>
-      </header>
 
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-wrap gap-3 mb-6">
-          {isAdmin ? (
-            <>
-              <Button
-                onClick={() => {
-                  playSwordClash()
-                  router.push("/dashboard/admin")
-                }}
-                size="lg"
-                className="gap-2 bg-amber-600 hover:bg-amber-700 text-white shadow-lg"
-              >
-                <Shield className="h-5 w-5" />
-                Panel de Administración
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <Card>
+            <CardHeader>
+              <Sparkles className="h-8 w-8 text-amber-600 dark:text-amber-400 mb-2" />
+              <CardTitle>Criaturas Únicas</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Descubre criaturas de todas las razas: Elfos, Enanos, Hobbits, Hombres y más.
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <Shield className="h-8 w-8 text-amber-600 dark:text-amber-400 mb-2" />
+              <CardTitle>Alineamientos</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>Clasifica criaturas según su alineamiento: Bueno, Malvado o Neutral.</CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <BookOpen className="h-8 w-8 text-amber-600 dark:text-amber-400 mb-2" />
+              <CardTitle>Historia Rica</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Cada criatura tiene su propia historia y habilidades únicas del lore de Tolkien.
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <Users className="h-8 w-8 text-amber-600 dark:text-amber-400 mb-2" />
+              <CardTitle>Gestión Completa</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>
+                Busca, filtra y gestiona tu colección de criaturas con herramientas avanzadas.
+              </CardDescription>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* CTA Section */}
+        <div className="mt-16 text-center">
+          <Card className="max-w-2xl mx-auto bg-amber-100 dark:bg-amber-950 border-amber-200 dark:border-amber-800">
+            <CardHeader>
+              <CardTitle className="text-2xl">¿Listo para comenzar?</CardTitle>
+              <CardDescription className="text-base">
+                Únete a la comunidad y empieza a explorar el fascinante mundo de las criaturas de Tolkien.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild size="lg" className="w-full md:w-auto">
+                <Link href="/register" onClick={handleAuthClick}>
+                  Crear Cuenta Gratis
+                </Link>
               </Button>
-              <Button
-                onClick={() => {
-                  playSwordClash()
-                  setShowCreateModal(true)
-                }}
-                size="lg"
-                className="gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 shadow-lg"
-              >
-                <Plus className="h-5 w-5" />
-                Crear Nueva Criatura
-              </Button>
-              <Button
-                onClick={() => {
-                  playSwordClash()
-                  setShowBattleArena(true)
-                }}
-                size="lg"
-                className="gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 shadow-lg"
-              >
-                <Swords className="h-5 w-5" />
-                Arena de Combate
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                onClick={() => {
-                  playSwordClash()
-                  setShowCreateModal(true)
-                }}
-                size="lg"
-                className="gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
-              >
-                <Plus className="h-5 w-5" />
-                Crear Nueva Criatura
-              </Button>
-              <Button
-                onClick={() => {
-                  playSwordClash()
-                  setShowBattleArena(true)
-                }}
-                size="lg"
-                className="gap-2 bg-orange-600 hover:bg-orange-700 text-white shadow-lg"
-              >
-                <Swords className="h-5 w-5" />
-                Arena de Combate
-              </Button>
-            </>
-          )}
+            </CardContent>
+          </Card>
         </div>
       </div>
-
-      <main className="container mx-auto px-4 pb-8">
-        <CreaturesTable onTrain={handleTrain} onBattle={handleBattle} />
-      </main>
-
-      <CreateCreatureModal open={showCreateModal} onOpenChange={setShowCreateModal} />
-
-      {selectedCreatureId && (
-        <TrainCreatureModal open={showTrainModal} onOpenChange={setShowTrainModal} creatureId={selectedCreatureId} />
-      )}
-
-      <BattleArena
-        open={showBattleArena}
-        onOpenChange={setShowBattleArena}
-        preselectedCreatureId={selectedCreatureId}
-      />
     </div>
   )
 }

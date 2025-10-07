@@ -19,7 +19,7 @@ type RegisterFormData = z.infer<typeof registerSchema>
 export default function RegisterPage() {
   const router = useRouter()
   useBackgroundMusic(true)
-  const playSwordClash = useSoundEffect("/sounds/sword-clash.mp3")
+  const playSwordClash = useSoundEffect("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Efecto%20de%20sonido%20de%20katana%20desenfundada%20-%20Sound%20Effects%20%26%20Music%20%28youtube%29-fyrDOqylrPPof3Fge4Ua0G9Ij47LwX.mp3")
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
