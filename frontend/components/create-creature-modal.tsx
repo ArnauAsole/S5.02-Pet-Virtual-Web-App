@@ -5,7 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { CreaturesAPI } from "@/lib/api"
-import { getCreatureImageByRace } from "@/lib/utils"
+import { getAllImagesForRace } from "@/lib/utils"
 import {
   Dialog,
   DialogContent,
@@ -20,6 +20,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
+import { Check } from "lucide-react"
 
 const RACES = ["Men", "Elfs", "Maiar", "Hobbits", "Orcs", "Dwarfs", "Others"]
 const ALIGNMENTS = ["GOOD", "EVIL", "NEUTRAL"]
@@ -39,6 +40,7 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
     description: "",
     abilities: "",
   })
+  const [selectedImage, setSelectedImage] = useState<string>("")
 
   const createMutation = useMutation({
     mutationFn: CreaturesAPI.create,
@@ -54,6 +56,7 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
         description: "",
         abilities: "",
       })
+      setSelectedImage("")
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || "Error al crear la criatura")
@@ -68,13 +71,19 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
       .map((a) => a.trim())
       .filter((a) => a.length > 0)
 
-    const imageUrl = getCreatureImageByRace(formData.race)
-
     createMutation.mutate({
       ...formData,
       abilities,
-      imageUrl,
+      imageUrl: selectedImage,
     })
+  }
+
+  const availableImages = formData.race ? getAllImagesForRace(formData.race) : []
+
+  const handleRaceChange = (value: string) => {
+    setFormData({ ...formData, race: value })
+    const images = getAllImagesForRace(value)
+    setSelectedImage(images[0] || "")
   }
 
   return (
@@ -100,7 +109,7 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
 
             <div className="space-y-2">
               <Label htmlFor="race">Raza *</Label>
-              <Select value={formData.race} onValueChange={(value) => setFormData({ ...formData, race: value })}>
+              <Select value={formData.race} onValueChange={handleRaceChange}>
                 <SelectTrigger id="race">
                   <SelectValue placeholder="Selecciona una raza" />
                 </SelectTrigger>
@@ -114,14 +123,33 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
               </Select>
             </div>
 
-            {formData.race && (
-              <div className="col-span-2 flex justify-center">
-                <div className="relative w-32 h-32 rounded-lg overflow-hidden border-2 border-primary/20">
-                  <img
-                    src={getCreatureImageByRace(formData.race) || "/placeholder.svg"}
-                    alt={`${formData.race} preview`}
-                    className="w-full h-full object-cover"
-                  />
+            {formData.race && availableImages.length > 0 && (
+              <div className="col-span-2 space-y-2">
+                <Label>Selecciona una imagen *</Label>
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                  {availableImages.map((imageUrl) => (
+                    <button
+                      key={imageUrl}
+                      type="button"
+                      onClick={() => setSelectedImage(imageUrl)}
+                      className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${
+                        selectedImage === imageUrl
+                          ? "border-primary ring-2 ring-primary ring-offset-2"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <img
+                        src={imageUrl || "/placeholder.svg"}
+                        alt={`${formData.race} option`}
+                        className="w-full h-full object-cover"
+                      />
+                      {selectedImage === imageUrl && (
+                        <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                          <Check className="w-8 h-8 text-primary" />
+                        </div>
+                      )}
+                    </button>
+                  ))}
                 </div>
               </div>
             )}
@@ -182,7 +210,7 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={createMutation.isPending}>
+            <Button type="submit" disabled={createMutation.isPending || !selectedImage}>
               {createMutation.isPending ? "Creando..." : "Crear Criatura"}
             </Button>
           </DialogFooter>

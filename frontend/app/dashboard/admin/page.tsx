@@ -72,70 +72,82 @@ export default function AdminPage() {
     <div
       className="min-h-screen"
       style={{
-        backgroundImage: "url(/images/company.jpg)",
+        backgroundImage: "url(/images/backgrounds/morgothVSglorfindel.jpg)",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
       }}
     >
-      <div className="min-h-screen bg-background/70 backdrop-blur-[2px]">
-        <header className="border-b bg-background/60 backdrop-blur-md">
+      <div className="min-h-screen bg-black/70 backdrop-blur-sm">
+        <header className="border-b border-white/10 bg-black/60 backdrop-blur-md">
           <div className="container mx-auto px-4 py-4">
-            <Button variant="ghost" onClick={() => router.push("/dashboard")} className="mb-2">
+            <Button
+              variant="ghost"
+              onClick={() => router.push("/dashboard")}
+              className="mb-2 text-white hover:bg-white/10"
+            >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Volver al Dashboard
             </Button>
-            <h1 className="text-3xl font-bold">Panel de Administración</h1>
-            <p className="text-muted-foreground">Gestiona usuarios y criaturas del sistema</p>
+            <h1 className="text-3xl font-bold text-white">Panel de Administración</h1>
+            <p className="text-gray-200">Gestiona usuarios y criaturas del sistema</p>
           </div>
         </header>
 
         <main className="container mx-auto px-4 py-8">
           <Tabs defaultValue="users" className="space-y-6">
-            <TabsList className="grid w-full max-w-md grid-cols-2">
-              <TabsTrigger value="users" className="gap-2">
+            <TabsList className="grid w-full max-w-md grid-cols-2 bg-black/60 border border-white/10">
+              <TabsTrigger
+                value="users"
+                className="gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-gray-300"
+              >
                 <Users className="h-4 w-4" />
                 Usuarios
               </TabsTrigger>
-              <TabsTrigger value="creatures" className="gap-2">
+              <TabsTrigger
+                value="creatures"
+                className="gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-gray-300"
+              >
                 <Swords className="h-4 w-4" />
                 Criaturas
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="users">
-              <Card>
+              <Card className="bg-black/60 border-white/10 backdrop-blur-md">
                 <CardHeader>
-                  <CardTitle>Gestión de Usuarios</CardTitle>
-                  <CardDescription>Lista de todos los usuarios registrados en el sistema</CardDescription>
+                  <CardTitle className="text-white">Gestión de Usuarios</CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Lista de todos los usuarios registrados en el sistema
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   {loadingUsers ? (
-                    <p className="text-center py-8 text-muted-foreground">Cargando usuarios...</p>
+                    <p className="text-center py-8 text-gray-300">Cargando usuarios...</p>
                   ) : users.length === 0 ? (
-                    <p className="text-center py-8 text-muted-foreground">No hay usuarios registrados</p>
+                    <p className="text-center py-8 text-gray-300">No hay usuarios registrados</p>
                   ) : (
-                    <div className="rounded-md border">
+                    <div className="rounded-md border border-white/10">
                       <Table>
                         <TableHeader>
-                          <TableRow>
-                            <TableHead>ID</TableHead>
-                            <TableHead>Email</TableHead>
-                            <TableHead>Roles</TableHead>
-                            <TableHead className="text-right">Acciones</TableHead>
+                          <TableRow className="border-white/10 hover:bg-white/5">
+                            <TableHead className="text-gray-200">ID</TableHead>
+                            <TableHead className="text-gray-200">Email</TableHead>
+                            <TableHead className="text-gray-200">Roles</TableHead>
+                            <TableHead className="text-right text-gray-200">Acciones</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
                           {users.map((user) => (
-                            <TableRow key={user.id}>
-                              <TableCell className="font-medium">{user.id}</TableCell>
-                              <TableCell>{user.email}</TableCell>
+                            <TableRow key={user.id} className="border-white/10 hover:bg-white/5">
+                              <TableCell className="font-medium text-white">{user.id}</TableCell>
+                              <TableCell className="text-gray-200">{user.email}</TableCell>
                               <TableCell>
                                 <div className="flex gap-1">
                                   {user.roles.map((role) => (
                                     <span
                                       key={role}
-                                      className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-primary/10 text-primary"
+                                      className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-amber-600/20 text-amber-400 border border-amber-600/30"
                                     >
                                       {role}
                                     </span>
@@ -148,8 +160,9 @@ export default function AdminPage() {
                                   size="sm"
                                   onClick={() => setDeleteUserId(user.id)}
                                   disabled={user.roles.includes("ADMIN")}
+                                  className="hover:bg-red-500/20 text-red-400"
                                 >
-                                  <Trash2 className="h-4 w-4 text-destructive" />
+                                  <Trash2 className="h-4 w-4" />
                                 </Button>
                               </TableCell>
                             </TableRow>
@@ -163,40 +176,47 @@ export default function AdminPage() {
             </TabsContent>
 
             <TabsContent value="creatures">
-              <Card>
+              <Card className="bg-black/60 border-white/10 backdrop-blur-md">
                 <CardHeader>
-                  <CardTitle>Gestión de Criaturas</CardTitle>
-                  <CardDescription>Lista de todas las criaturas creadas por los usuarios</CardDescription>
+                  <CardTitle className="text-white">Gestión de Criaturas</CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Lista de todas las criaturas creadas por los usuarios
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   {loadingCreatures ? (
-                    <p className="text-center py-8 text-muted-foreground">Cargando criaturas...</p>
+                    <p className="text-center py-8 text-gray-300">Cargando criaturas...</p>
                   ) : creatures.length === 0 ? (
-                    <p className="text-center py-8 text-muted-foreground">No hay criaturas creadas</p>
+                    <p className="text-center py-8 text-gray-300">No hay criaturas creadas</p>
                   ) : (
-                    <div className="rounded-md border">
+                    <div className="rounded-md border border-white/10">
                       <Table>
                         <TableHeader>
-                          <TableRow>
-                            <TableHead>ID</TableHead>
-                            <TableHead>Nombre</TableHead>
-                            <TableHead>Raza</TableHead>
-                            <TableHead>Nivel</TableHead>
-                            <TableHead>Propietario</TableHead>
-                            <TableHead className="text-right">Acciones</TableHead>
+                          <TableRow className="border-white/10 hover:bg-white/5">
+                            <TableHead className="text-gray-200">ID</TableHead>
+                            <TableHead className="text-gray-200">Nombre</TableHead>
+                            <TableHead className="text-gray-200">Raza</TableHead>
+                            <TableHead className="text-gray-200">Nivel</TableHead>
+                            <TableHead className="text-gray-200">Propietario</TableHead>
+                            <TableHead className="text-right text-gray-200">Acciones</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
                           {creatures.map((creature) => (
-                            <TableRow key={creature.id}>
-                              <TableCell className="font-medium">{creature.id}</TableCell>
-                              <TableCell>{creature.name}</TableCell>
-                              <TableCell>{creature.race}</TableCell>
-                              <TableCell>Nivel {creature.level}</TableCell>
-                              <TableCell>Usuario #{creature.ownerId}</TableCell>
+                            <TableRow key={creature.id} className="border-white/10 hover:bg-white/5">
+                              <TableCell className="font-medium text-white">{creature.id}</TableCell>
+                              <TableCell className="text-gray-200">{creature.name}</TableCell>
+                              <TableCell className="text-gray-200">{creature.race}</TableCell>
+                              <TableCell className="text-gray-200">Nivel {creature.level}</TableCell>
+                              <TableCell className="text-gray-200">Usuario #{creature.ownerId}</TableCell>
                               <TableCell className="text-right">
-                                <Button variant="ghost" size="sm" onClick={() => setDeleteCreatureId(creature.id)}>
-                                  <Trash2 className="h-4 w-4 text-destructive" />
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setDeleteCreatureId(creature.id)}
+                                  className="hover:bg-red-500/20 text-red-400"
+                                >
+                                  <Trash2 className="h-4 w-4" />
                                 </Button>
                               </TableCell>
                             </TableRow>
@@ -213,18 +233,20 @@ export default function AdminPage() {
 
         {/* Delete User Confirmation Dialog */}
         <AlertDialog open={deleteUserId !== null} onOpenChange={() => setDeleteUserId(null)}>
-          <AlertDialogContent>
+          <AlertDialogContent className="bg-black/90 border-white/20 backdrop-blur-md">
             <AlertDialogHeader>
-              <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
-              <AlertDialogDescription>
+              <AlertDialogTitle className="text-white">¿Estás seguro?</AlertDialogTitle>
+              <AlertDialogDescription className="text-gray-300">
                 Esta acción no se puede deshacer. Se eliminará permanentemente el usuario y todas sus criaturas.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogCancel className="bg-white/10 text-white border-white/20 hover:bg-white/20">
+                Cancelar
+              </AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => deleteUserId && deleteUserMutation.mutate(deleteUserId)}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                className="bg-red-600 text-white hover:bg-red-700"
               >
                 Eliminar
               </AlertDialogAction>
@@ -234,18 +256,20 @@ export default function AdminPage() {
 
         {/* Delete Creature Confirmation Dialog */}
         <AlertDialog open={deleteCreatureId !== null} onOpenChange={() => setDeleteCreatureId(null)}>
-          <AlertDialogContent>
+          <AlertDialogContent className="bg-black/90 border-white/20 backdrop-blur-md">
             <AlertDialogHeader>
-              <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
-              <AlertDialogDescription>
+              <AlertDialogTitle className="text-white">¿Estás seguro?</AlertDialogTitle>
+              <AlertDialogDescription className="text-gray-300">
                 Esta acción no se puede deshacer. Se eliminará permanentemente la criatura.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogCancel className="bg-white/10 text-white border-white/20 hover:bg-white/20">
+                Cancelar
+              </AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => deleteCreatureId && deleteCreatureMutation.mutate(deleteCreatureId)}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                className="bg-red-600 text-white hover:bg-red-700"
               >
                 Eliminar
               </AlertDialogAction>

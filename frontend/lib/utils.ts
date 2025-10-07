@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function getCreatureImageByRace(race: string): string {
+export function getAllImagesForRace(race: string): string[] {
   const raceImages: Record<string, string[]> = {
     men: ["/images/creatures/races/men/gondorian_elite.png", "/images/creatures/races/men/numenorean_warrior.jpg"],
     elfs: ["/images/creatures/races/elfs/elf_archer.png"],
@@ -35,9 +35,11 @@ export function getCreatureImageByRace(race: string): string {
   }
 
   const folder = raceMap[race] || "others"
-  const images = raceImages[folder] || raceImages.others
+  return raceImages[folder] || raceImages.others
+}
 
-  // Select random image from available images for this race
+export function getCreatureImageByRace(race: string): string {
+  const images = getAllImagesForRace(race)
   const randomIndex = Math.floor(Math.random() * images.length)
   return images[randomIndex]
 }

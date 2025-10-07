@@ -11,6 +11,7 @@ public record UpdateCreatureDto(
         @Min(1) @Max(200) Integer maxHealth,
         @Min(0) @Max(50) Integer attackBase,
         @Min(0) @Max(50) Integer defenseBase,
-        List<@Size(max = 20) String> accessories
+        List<@Size(max = 20) String> accessories,
+        String imageUrl
 ) {
 }

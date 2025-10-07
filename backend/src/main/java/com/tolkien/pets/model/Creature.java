@@ -33,6 +33,8 @@ public class Creature {
     // Propietario (id de User)
     private Long ownerId;
 
+    private String imageUrl;
+
     @ElementCollection
     private List<String> accessories = new ArrayList<>();
 
@@ -137,6 +139,14 @@ public class Creature {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public List<String> getAccessories() {

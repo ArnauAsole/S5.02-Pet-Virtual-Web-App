@@ -15,6 +15,7 @@ public record CreatureDto(
         int health,
         boolean inCombat,
         Long ownerId,
-        List<String> accessories
-) {
+        List<String> accessories,
+        String imageUrl
+        ) {
 }

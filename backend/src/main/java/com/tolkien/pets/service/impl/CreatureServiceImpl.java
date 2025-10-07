@@ -42,6 +42,7 @@ public class CreatureServiceImpl implements CreatureService {
         c.setName(dto.name());
         c.setRace(dto.race());
         c.setColor(dto.color());
+        c.setImageUrl(dto.imageUrl());  // Set imageUrl from DTO
         if (dto.maxHealth() != null) {
             c.setMaxHealth(dto.maxHealth());
             c.setHealth(dto.maxHealth());
@@ -62,6 +63,7 @@ public class CreatureServiceImpl implements CreatureService {
         c.setName(dto.name());
         c.setRace(dto.race());
         c.setColor(dto.color());
+        c.setImageUrl(dto.imageUrl());  // Update imageUrl from DTO
         if (dto.maxHealth() != null) {
             c.setMaxHealth(dto.maxHealth());
             if (c.getHealth() > dto.maxHealth()) c.setHealth(dto.maxHealth());
@@ -90,8 +92,8 @@ public class CreatureServiceImpl implements CreatureService {
         if (c.getHealth() <= 5) throw new ForbiddenOperationException("Not enough health to train");
 
         // Entrenar: +10 XP, -5 salud
-        addXpAndMaybeLevelUp(c, 10);
-        c.setHealth(Math.max(1, c.getHealth() - 5));
+        addXpAndMaybeLevelUp(c, 20);
+        c.setHealth(Math.max(1, c.getHealth() - 15));
 
         return toDto(c);
     }
@@ -198,7 +200,8 @@ public class CreatureServiceImpl implements CreatureService {
                 c.getLevel(), c.getXp(),
                 c.getAttackBase(), c.getDefenseBase(),
                 c.getMaxHealth(), c.getHealth(),
-                c.isInCombat(), c.getOwnerId(), c.getAccessories()
+                c.isInCombat(), c.getOwnerId(), c.getAccessories(),
+                c.getImageUrl()  // Include imageUrl in DTO mapping
         );
     }
 }
