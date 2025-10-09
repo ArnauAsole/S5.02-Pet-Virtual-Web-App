@@ -1,9 +1,11 @@
-const TOKEN_KEY = "jwt"
+const TOKEN_KEY = "token"
 
 export interface AuthUser {
   token: string
-  roles: string[]
+  id: number
   email: string
+  roles: string[]
+  profileImage?: string
 }
 
 function decodeJWT(token: string): { email: string; roles: string[]; sub: string; exp?: number } | null {
@@ -18,7 +20,7 @@ function decodeJWT(token: string): { email: string; roles: string[]; sub: string
     )
     return JSON.parse(jsonPayload)
   } catch (error) {
-    console.error("[v0] Error decoding JWT:", error)
+    console.error("Error decoding JWT:", error)
     return null
   }
 }
@@ -33,7 +35,6 @@ export const auth = {
       if (decoded?.exp) {
         const now = Math.floor(Date.now() / 1000)
         if (decoded.exp < now) {
-          console.log("[v0] Token expired, clearing auth")
           this.clear()
           return null
         }
@@ -43,25 +44,47 @@ export const auth = {
     return token
   },
 
-  setToken(token: string) {
+  setToken(
+    tokenOrResponse: string | { token: string; id: number; email: string; roles: string[]; profileImage?: string },
+    profileImage?: string,
+  ) {
     if (typeof window === "undefined") return
 
-    console.log("[v0] Setting token:", token.substring(0, 20) + "...")
+    let token: string
+    let userData: Partial<AuthUser> = {}
+
+    // Handle both string token and AuthResponse object
+    if (typeof tokenOrResponse === "string") {
+      token = tokenOrResponse
+      const decoded = decodeJWT(token)
+      if (decoded) {
+        userData = {
+          email: decoded.email || decoded.sub,
+          roles: decoded.roles || [],
+          profileImage: profileImage,
+        }
+      }
+    } else {
+      token = tokenOrResponse.token
+      userData = {
+        id: tokenOrResponse.id,
+        email: tokenOrResponse.email,
+        roles: tokenOrResponse.roles,
+        profileImage: tokenOrResponse.profileImage,
+      }
+    }
 
     localStorage.setItem(TOKEN_KEY, token)
     document.cookie = `jwt=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`
 
-    // Decode JWT to extract user info
-    const decoded = decodeJWT(token)
-    if (decoded) {
-      console.log("[v0] Decoded JWT - email:", decoded.email || decoded.sub, "roles:", decoded.roles)
-      const user: AuthUser = {
-        token,
-        email: decoded.email || decoded.sub,
-        roles: decoded.roles || [],
-      }
-      this.setUser(user)
+    const user: AuthUser = {
+      token,
+      id: userData.id || 0,
+      email: userData.email || "",
+      roles: userData.roles || [],
+      profileImage: userData.profileImage,
     }
+    this.setUser(user)
   },
 
   getUser(): AuthUser | null {
@@ -81,21 +104,19 @@ export const auth = {
   },
 
   isAdmin(): boolean {
-    return this.getRoles().includes("ADMIN")
+    return this.getRoles().includes("ADMIN") || this.getRoles().includes("ROLE_ADMIN")
   },
 
   clear() {
     if (typeof window === "undefined") return
-    console.log("[v0] Clearing auth data")
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem("user")
     document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
   },
 
   isAuthed(): boolean {
-    const token = this.getToken()
-    const isAuthed = !!token
-    console.log("[v0] isAuthed check:", isAuthed)
-    return isAuthed
+    return !!this.getToken()
   },
 }
+
+export default auth

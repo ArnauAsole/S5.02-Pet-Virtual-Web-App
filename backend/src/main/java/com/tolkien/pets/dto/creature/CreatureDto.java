@@ -1,21 +1,24 @@
 package com.tolkien.pets.dto.creature;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tolkien.pets.model.CharacterClass;
+import lombok.Data;
 
-public record CreatureDto(
-        Long id,
-        String name,
-        String race,
-        String color,
-        int level,
-        int xp,
-        int attackBase,
-        int defenseBase,
-        int maxHealth,
-        int health,
-        boolean inCombat,
-        Long ownerId,
-        List<String> accessories,
-        String imageUrl
-        ) {
+@Data
+public class CreatureDto {
+    private Long id;
+    private String name;
+    private String race;
+
+    @JsonProperty("class")
+    private CharacterClass characterClass;
+
+    private int level;
+    private int experience;
+    private int health;
+    private int attack;
+    private int defense;
+    private boolean inCombat;
+    private Long ownerId;
+    private String imageUrl;
 }

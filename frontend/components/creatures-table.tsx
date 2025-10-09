@@ -26,7 +26,7 @@ import { useSoundEffect } from "@/hooks/use-sound-effect"
 import { getCreatureImageByRace } from "@/lib/utils"
 import Image from "next/image"
 
-const RACES = ["Elf", "Orc", "Dwarf", "Hobbit", "Man", "Ent", "Maiar", "Other"]
+const RACES = ["Elfs", "Orcs", "Dwarfs", "Hobbits", "Men", "Maiar", "Others"]
 
 interface CreaturesTableProps {
   onTrain?: (creatureId: number) => void

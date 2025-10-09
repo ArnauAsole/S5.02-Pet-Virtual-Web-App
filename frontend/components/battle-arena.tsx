@@ -1,14 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { CreaturesAPI } from "@/lib/api"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
-import { Swords, Shield, Heart, Zap, Flag } from "lucide-react"
+import { Swords, Shield, Heart, Zap, Flag, Sparkles } from "lucide-react"
 import { toast } from "sonner"
 import type { Creature } from "@/lib/types"
 
@@ -34,9 +34,11 @@ interface BattleState {
   log: string[]
   phase: BattlePhase
   winner: "player" | "enemy" | null
+  isAnimating: boolean
 }
 
 export function BattleArena({ open, onOpenChange, preselectedCreatureId }: BattleArenaProps) {
+  const queryClient = useQueryClient()
   const { data: creaturesData } = useQuery({
     queryKey: ["creatures"],
     queryFn: () => CreaturesAPI.list({ page: 0, size: 100 }),
@@ -59,6 +61,7 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
     log: [],
     phase: "selection",
     winner: null,
+    isAnimating: false,
   })
 
   useEffect(() => {
@@ -81,16 +84,17 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
     setBattle({
       playerCreature: player,
       enemyCreature: enemy,
-      playerHP: 100,
-      enemyHP: 100,
-      playerMaxHP: 100,
-      enemyMaxHP: 100,
+      playerHP: player.health,
+      enemyHP: enemy.health,
+      playerMaxHP: player.health,
+      enemyMaxHP: enemy.health,
       playerDefending: false,
       enemyDefending: false,
       turn: "player",
       log: [`¡Comienza el combate entre ${player.name} y ${enemy.name}!`],
       phase: "battle",
       winner: null,
+      isAnimating: false,
     })
   }
 
@@ -100,8 +104,19 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
     return Math.floor(baseDamage * modifier)
   }
 
+  const updateCreatureHealth = async (creatureId: number, newHealth: number) => {
+    try {
+      await CreaturesAPI.update(creatureId, { health: Math.max(1, newHealth) })
+      queryClient.invalidateQueries({ queryKey: ["creatures"] })
+    } catch (error) {
+      console.error("Error updating creature health:", error)
+    }
+  }
+
   const executeAction = (action: BattleAction) => {
-    if (battle.phase !== "battle" || battle.turn !== "player") return
+    if (battle.phase !== "battle" || battle.turn !== "player" || battle.isAnimating) return
+
+    setBattle((prev) => ({ ...prev, isAnimating: true }))
 
     const newLog = [...battle.log]
     let newPlayerHP = battle.playerHP
@@ -112,7 +127,7 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
     // Player action
     if (action === "attack") {
       const damage = calculateDamage(battle.playerCreature!, battle.enemyDefending)
-      newEnemyHP = Math.max(0, battle.enemyHP - damage)
+      newEnemyHP = Math.max(1, battle.enemyHP - damage)
       newLog.push(`${battle.playerCreature!.name} ataca e inflige ${damage} de daño!`)
       newEnemyDefending = false
     } else if (action === "defend") {
@@ -125,23 +140,30 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
         log: newLog,
         phase: "result",
         winner: "enemy",
+        isAnimating: false,
       })
+      updateCreatureHealth(battle.playerCreature!.id, battle.playerHP)
+      updateCreatureHealth(battle.enemyCreature!.id, battle.enemyHP)
       return
     }
 
     // Check if enemy is defeated
-    if (newEnemyHP <= 0) {
+    if (newEnemyHP <= 1) {
       newLog.push(`¡${battle.playerCreature!.name} ha ganado el combate!`)
+      newLog.push(`${battle.playerCreature!.name} gana 30 puntos de experiencia!`)
       setBattle({
         ...battle,
-        enemyHP: 0,
+        enemyHP: 1,
         log: newLog,
         phase: "result",
         winner: "player",
+        isAnimating: false,
       })
       toast.success("¡Victoria!", {
         description: `${battle.playerCreature!.name} ha derrotado a ${battle.enemyCreature!.name}`,
       })
+      updateCreatureHealth(battle.playerCreature!.id, newPlayerHP)
+      updateCreatureHealth(battle.enemyCreature!.id, 1)
       return
     }
 
@@ -151,7 +173,7 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
 
       if (enemyAction === "attack") {
         const damage = calculateDamage(battle.enemyCreature!, newPlayerDefending)
-        newPlayerHP = Math.max(0, newPlayerHP - damage)
+        newPlayerHP = Math.max(1, newPlayerHP - damage)
         newLog.push(`${battle.enemyCreature!.name} ataca e inflige ${damage} de daño!`)
         newPlayerDefending = false
       } else {
@@ -160,18 +182,22 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
       }
 
       // Check if player is defeated
-      if (newPlayerHP <= 0) {
+      if (newPlayerHP <= 1) {
         newLog.push(`${battle.enemyCreature!.name} ha ganado el combate!`)
+        newLog.push(`${battle.enemyCreature!.name} gana 30 puntos de experiencia!`)
         setBattle({
           ...battle,
-          playerHP: 0,
+          playerHP: 1,
           log: newLog,
           phase: "result",
           winner: "enemy",
+          isAnimating: false,
         })
         toast.error("Derrota", {
           description: `${battle.enemyCreature!.name} ha derrotado a ${battle.playerCreature!.name}`,
         })
+        updateCreatureHealth(battle.playerCreature!.id, 1)
+        updateCreatureHealth(battle.enemyCreature!.id, newEnemyHP)
         return
       }
 
@@ -183,8 +209,9 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
         enemyDefending: newEnemyDefending,
         log: newLog,
         turn: "player",
+        isAnimating: false,
       })
-    }, 1000)
+    }, 1500)
 
     setBattle({
       ...battle,
@@ -211,6 +238,7 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
       log: [],
       phase: "selection",
       winner: null,
+      isAnimating: false,
     })
     setSelectedPlayerId(preselectedCreatureId?.toString() || "")
     setSelectedEnemyId("")
@@ -239,7 +267,7 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
                   <SelectContent>
                     {creatures.map((creature) => (
                       <SelectItem key={creature.id} value={creature.id.toString()}>
-                        {creature.name} ({creature.race})
+                        {creature.name} ({creature.race}) - HP: {creature.health}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -257,7 +285,7 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
                       .filter((c) => c.id.toString() !== selectedPlayerId)
                       .map((creature) => (
                         <SelectItem key={creature.id} value={creature.id.toString()}>
-                          {creature.name} ({creature.race})
+                          {creature.name} ({creature.race}) - HP: {creature.health}
                         </SelectItem>
                       ))}
                   </SelectContent>
@@ -277,7 +305,11 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
             {/* Battle Status */}
             <div className="grid gap-4 md:grid-cols-2">
               {/* Player */}
-              <div className="space-y-2 p-4 border rounded-lg bg-blue-50 dark:bg-blue-950/20">
+              <div
+                className={`space-y-2 p-4 border rounded-lg bg-blue-50 dark:bg-blue-950/20 transition-all duration-300 ${
+                  battle.turn === "player" && battle.phase === "battle" ? "ring-2 ring-blue-500 shadow-lg" : ""
+                }`}
+              >
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold">{battle.playerCreature.name}</h3>
                   <Badge variant="secondary">{battle.playerCreature.race}</Badge>
@@ -295,7 +327,7 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
                   <Progress value={(battle.playerHP / battle.playerMaxHP) * 100} className="h-2" />
                 </div>
                 {battle.playerDefending && (
-                  <Badge variant="outline" className="gap-1">
+                  <Badge variant="outline" className="gap-1 animate-pulse">
                     <Shield className="h-3 w-3" />
                     Defendiendo
                   </Badge>
@@ -303,7 +335,11 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
               </div>
 
               {/* Enemy */}
-              <div className="space-y-2 p-4 border rounded-lg bg-red-50 dark:bg-red-950/20">
+              <div
+                className={`space-y-2 p-4 border rounded-lg bg-red-50 dark:bg-red-950/20 transition-all duration-300 ${
+                  battle.turn === "enemy" && battle.phase === "battle" ? "ring-2 ring-red-500 shadow-lg" : ""
+                }`}
+              >
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold">{battle.enemyCreature.name}</h3>
                   <Badge variant="secondary">{battle.enemyCreature.race}</Badge>
@@ -321,7 +357,7 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
                   <Progress value={(battle.enemyHP / battle.enemyMaxHP) * 100} className="h-2" />
                 </div>
                 {battle.enemyDefending && (
-                  <Badge variant="outline" className="gap-1">
+                  <Badge variant="outline" className="gap-1 animate-pulse">
                     <Shield className="h-3 w-3" />
                     Defendiendo
                   </Badge>
@@ -334,54 +370,71 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
               <h4 className="text-sm font-semibold mb-2">Registro de Combate</h4>
               <div className="space-y-1">
                 {battle.log.map((entry, i) => (
-                  <p key={i} className="text-sm text-muted-foreground">
+                  <p key={i} className="text-sm text-muted-foreground animate-in fade-in slide-in-from-bottom-2">
                     {entry}
                   </p>
                 ))}
               </div>
             </div>
 
-            {/* Actions */}
+            {/* Actions - Enhanced with animations and better styling */}
             {battle.phase === "battle" && (
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => executeAction("attack")}
-                  disabled={battle.turn !== "player"}
-                  className="flex-1 gap-2"
-                  variant="default"
-                >
-                  <Zap className="h-4 w-4" />
-                  Atacar
-                </Button>
-                <Button
-                  onClick={() => executeAction("defend")}
-                  disabled={battle.turn !== "player"}
-                  className="flex-1 gap-2"
-                  variant="secondary"
-                >
-                  <Shield className="h-4 w-4" />
-                  Defender
-                </Button>
-                <Button
-                  onClick={() => executeAction("flee")}
-                  disabled={battle.turn !== "player"}
-                  className="flex-1 gap-2"
-                  variant="outline"
-                >
-                  <Flag className="h-4 w-4" />
-                  Huir
-                </Button>
+              <div className="relative">
+                {battle.turn === "player" && (
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-sm font-medium text-primary animate-pulse">
+                    Tu turno
+                  </div>
+                )}
+                <div className="grid grid-cols-3 gap-3">
+                  <Button
+                    onClick={() => executeAction("attack")}
+                    disabled={battle.turn !== "player" || battle.isAnimating}
+                    className="flex-col h-24 gap-2 bg-gradient-to-br from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white shadow-lg transition-all hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
+                  >
+                    <Zap className="h-6 w-6" />
+                    <span className="font-semibold">Atacar</span>
+                  </Button>
+                  <Button
+                    onClick={() => executeAction("defend")}
+                    disabled={battle.turn !== "player" || battle.isAnimating}
+                    className="flex-col h-24 gap-2 bg-gradient-to-br from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg transition-all hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
+                  >
+                    <Shield className="h-6 w-6" />
+                    <span className="font-semibold">Defender</span>
+                  </Button>
+                  <Button
+                    onClick={() => executeAction("flee")}
+                    disabled={battle.turn !== "player" || battle.isAnimating}
+                    className="flex-col h-24 gap-2 bg-gradient-to-br from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white shadow-lg transition-all hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
+                  >
+                    <Flag className="h-6 w-6" />
+                    <span className="font-semibold">Huir</span>
+                  </Button>
+                </div>
               </div>
             )}
 
             {battle.phase === "result" && (
               <div className="space-y-3">
-                <div className="text-center p-4 border rounded-lg bg-muted/50">
-                  <h3 className="text-lg font-bold mb-2">{battle.winner === "player" ? "¡Victoria!" : "Derrota"}</h3>
+                <div
+                  className={`text-center p-6 border rounded-lg ${
+                    battle.winner === "player"
+                      ? "bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border-green-200 dark:border-green-800"
+                      : "bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20 border-red-200 dark:border-red-800"
+                  } animate-in zoom-in-50 duration-500`}
+                >
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <Sparkles className="h-6 w-6" />
+                    <h3 className="text-2xl font-bold">{battle.winner === "player" ? "¡Victoria!" : "Derrota"}</h3>
+                    <Sparkles className="h-6 w-6" />
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     {battle.winner === "player"
-                      ? `${battle.playerCreature.name} ha ganado el combate`
-                      : `${battle.enemyCreature.name} ha ganado el combate`}
+                      ? `${battle.playerCreature.name} ha ganado el combate y gana 30 XP`
+                      : `${battle.enemyCreature.name} ha ganado el combate y gana 30 XP`}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Las criaturas mantienen su salud actual después del combate
                   </p>
                 </div>
                 <div className="flex gap-2">

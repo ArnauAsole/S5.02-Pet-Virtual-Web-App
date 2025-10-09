@@ -92,6 +92,18 @@ export function RestCreatureModal({ open, onOpenChange, creatureId }: RestCreatu
         </DialogHeader>
 
         <div className="space-y-4 py-4">
+          {resting && (
+            <div className="relative w-full h-32 rounded-lg overflow-hidden mb-4">
+              <Image
+                src="/fantasy-campfire-at-night-with-warm-orange-glow.jpg"
+                alt="Campamento de descanso"
+                fill
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+            </div>
+          )}
+
           <div className="flex items-center gap-3">
             <div className="relative h-16 w-16 rounded-full overflow-hidden bg-primary/10">
               <Image
@@ -123,7 +135,7 @@ export function RestCreatureModal({ open, onOpenChange, creatureId }: RestCreatu
 
           {resting ? (
             <div className="space-y-3">
-              <p className="text-sm text-center text-muted-foreground">Descansando...</p>
+              <p className="text-sm text-center text-muted-foreground">Descansando junto a la hoguera...</p>
               <Progress value={progress} className="h-2" />
               <div className="flex justify-center gap-2">
                 <Heart className="h-5 w-5 text-red-500 animate-pulse" />
@@ -159,3 +171,5 @@ export function RestCreatureModal({ open, onOpenChange, creatureId }: RestCreatu
     </Dialog>
   )
 }
+
+export default RestCreatureModal

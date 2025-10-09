@@ -1,39 +1,63 @@
 import axios from "axios"
 import type { Creature, AuthResponse, CreateCreatureData, UpdateCreatureData, User, PaginatedResponse } from "./types"
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/api"
+const USE_REFRESH = process.env.NEXT_PUBLIC_USE_REFRESH === "true"
+
 const api = axios.create({
-  baseURL: "http://localhost:8080",
-  withCredentials: false,
+  baseURL: API_BASE_URL,
+  withCredentials: false, // Set to false by default as backend uses Bearer tokens
 })
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("jwt")
+  const token = localStorage.getItem("token")
   if (token) {
     config.headers = config.headers ?? {}
     config.headers.Authorization = `Bearer ${token}`
-    console.log("[v0] Token attached to request:", token.substring(0, 20) + "...")
-  } else {
-    console.log("[v0] No token found in localStorage")
   }
   return config
 })
 
-api.interceptors.response.use(
-  (r) => {
-    return r
-  },
-  (error) => {
-    if (error?.response?.status === 403) {
-      console.log("[v0] 403 Forbidden - Token may be invalid or expired")
-      const token = localStorage.getItem("jwt")
-      console.log("[v0] Current token:", token ? token.substring(0, 20) + "..." : "none")
+async function refreshAccessToken(): Promise<string | null> {
+  if (!USE_REFRESH) return null
+
+  try {
+    const response = await axios.post<{ token: string }>(`${API_BASE_URL}/auth/refresh`, {}, { withCredentials: true })
+    const newToken = response.data.token
+    if (newToken) {
+      localStorage.setItem("token", newToken)
+      return newToken
     }
+  } catch (error) {
+    console.error("Failed to refresh token:", error)
+  }
+  return null
+}
+
+api.interceptors.response.use(
+  (r) => r,
+  async (error) => {
     if (error?.response?.status === 401) {
-      console.log("[v0] 401 Unauthorized - Clearing token and redirecting to login")
-      localStorage.removeItem("jwt")
-      localStorage.removeItem("user")
-      if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
-        window.location.href = "/login"
+      const isLoginPage = typeof window !== "undefined" && window.location.pathname.startsWith("/login")
+
+      if (!isLoginPage && USE_REFRESH) {
+        // Try to refresh token once
+        const newToken = await refreshAccessToken()
+        if (newToken && error.config) {
+          // Retry the original request with new token
+          error.config.headers.Authorization = `Bearer ${newToken}`
+          return api.request(error.config)
+        }
+      }
+
+      // Clear auth and redirect to login
+      if (!isLoginPage) {
+        localStorage.removeItem("token")
+        localStorage.removeItem("user")
+
+        if (typeof window !== "undefined") {
+          window.location.href = "/login"
+        }
       }
     }
     return Promise.reject(error)
@@ -41,8 +65,8 @@ api.interceptors.response.use(
 )
 
 export const AuthAPI = {
-  register: async (data: { email: string; password: string }) => {
-    const response = await api.post("/auth/register", data)
+  register: async (data: { email: string; password: string; profileImage?: string }): Promise<AuthResponse> => {
+    const response = await api.post<AuthResponse>("/auth/register", data)
     return response.data
   },
 
@@ -53,7 +77,7 @@ export const AuthAPI = {
 }
 
 export const CreaturesAPI = {
-  list: async (params?: any): Promise<PaginatedResponse<Creature>> => {
+  list: async (params?: { includeInCombat?: boolean }): Promise<PaginatedResponse<Creature>> => {
     try {
       const response = await api.get<any>("/creatures", { params })
 
@@ -70,12 +94,10 @@ export const CreaturesAPI = {
         }
       }
 
-      // If backend returns paginated response, use it directly
       if (response.data && typeof response.data === "object" && "content" in response.data) {
         return response.data as PaginatedResponse<Creature>
       }
 
-      // Fallback: empty response
       return {
         content: [],
         pageable: { pageNumber: 0, pageSize: 0 },
@@ -85,7 +107,6 @@ export const CreaturesAPI = {
       }
     } catch (error) {
       console.error("Error fetching creatures:", error)
-      // Return empty paginated response on error
       return {
         content: [],
         pageable: { pageNumber: 0, pageSize: 0 },
@@ -142,14 +163,33 @@ export const AdminAPI = {
     }
   },
 
+  grantAdmin: async (id: number): Promise<void> => {
+    await api.post(`/admin/users/${id}/grant-admin`)
+  },
+
+  revokeAdmin: async (id: number): Promise<void> => {
+    await api.post(`/admin/users/${id}/revoke-admin`)
+  },
+
   deleteUser: async (id: number): Promise<void> => {
     await api.delete(`/admin/users/${id}`)
   },
 
-  listAllCreatures: async (): Promise<Creature[]> => {
+  getUserCreatures: async (ownerId: number): Promise<Creature[]> => {
     try {
-      const response = await api.get<Creature[]>("/admin/creatures")
-      return Array.isArray(response.data) ? response.data : []
+      const response = await api.get<any>("/creatures")
+      const allCreatures = Array.isArray(response.data) ? response.data : response.data?.content || []
+      return allCreatures.filter((c: Creature) => c.ownerId === ownerId)
+    } catch (error) {
+      console.error("Error fetching user creatures:", error)
+      return []
+    }
+  },
+
+  getAllCreatures: async (): Promise<Creature[]> => {
+    try {
+      const response = await api.get<any>("/creatures")
+      return Array.isArray(response.data) ? response.data : response.data?.content || []
     } catch (error) {
       console.error("Error fetching all creatures:", error)
       return []

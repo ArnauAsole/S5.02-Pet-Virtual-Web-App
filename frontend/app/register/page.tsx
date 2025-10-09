@@ -1,4 +1,5 @@
 "use client"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -13,13 +14,19 @@ import Link from "next/link"
 import type { z } from "zod"
 import { useBackgroundMusic } from "@/hooks/use-background-music"
 import { useSoundEffect } from "@/hooks/use-sound-effect"
+import { getAllProfileImages } from "@/lib/utils"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { Check } from "lucide-react"
 
 type RegisterFormData = z.infer<typeof registerSchema>
 
 export default function RegisterPage() {
   const router = useRouter()
   useBackgroundMusic(true)
-  const playSwordClash = useSoundEffect("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Efecto%20de%20sonido%20de%20katana%20desenfundada%20-%20Sound%20Effects%20%26%20Music%20%28youtube%29-fyrDOqylrPPof3Fge4Ua0G9Ij47LwX.mp3")
+  const playSwordClash = useSoundEffect("/sounds/sword-clash.mp3")
+
+  const [selectedProfileImage, setSelectedProfileImage] = useState<string>(getAllProfileImages()[0])
+  const profileImages = getAllProfileImages()
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -33,19 +40,31 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterFormData) => {
     playSwordClash()
 
+    console.log("[v0] Register attempt with email:", data.email)
+    console.log("[v0] Selected profile image:", selectedProfileImage)
+    console.log("[v0] API URL:", process.env.NEXT_PUBLIC_API_URL)
+
     try {
-      await AuthAPI.register({
+      const payload = {
         email: data.email,
         password: data.password,
-      })
+        avatar: selectedProfileImage,
+      }
+      console.log("[v0] Sending register payload:", payload)
+
+      const response = await AuthAPI.register(payload)
+      console.log("[v0] Register response:", response)
 
       toast.success("Usuario creado correctamente. Redirigiendo...")
       setTimeout(() => router.push("/login"), 1500)
     } catch (err: any) {
+      console.log("[v0] Register error:", err)
+      console.log("[v0] Error response:", err.response)
+
       let errorMessage = "No se pudo crear el usuario"
 
       if (err.code === "ERR_NETWORK" || !err.response) {
-        errorMessage = "No se puede conectar con el servidor. Verifica que la API esté activa."
+        errorMessage = "No se puede conectar con el servidor. Verifica que la API esté activa en http://localhost:8080"
       } else if (err.response?.status === 409 || err.response?.status === 400) {
         errorMessage = "Este email ya está registrado. Prueba con otro email."
       } else if (err.response?.status >= 500) {
@@ -74,6 +93,34 @@ export default function RegisterPage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div className="space-y-2">
+                <FormLabel>Imagen de Perfil</FormLabel>
+                <div className="grid grid-cols-4 gap-2">
+                  {profileImages.map((image) => (
+                    <button
+                      key={image}
+                      type="button"
+                      onClick={() => setSelectedProfileImage(image)}
+                      className={`relative rounded-full border-2 transition-all ${
+                        selectedProfileImage === image
+                          ? "border-primary ring-2 ring-primary ring-offset-2"
+                          : "border-muted hover:border-primary/50"
+                      }`}
+                    >
+                      <Avatar className="h-16 w-16">
+                        <AvatarImage src={image || "/placeholder.svg"} alt="Profile" />
+                        <AvatarFallback>?</AvatarFallback>
+                      </Avatar>
+                      {selectedProfileImage === image && (
+                        <div className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full p-1">
+                          <Check className="h-3 w-3" />
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <FormField
                 control={form.control}
                 name="email"

@@ -1,7 +1,8 @@
 package com.tolkien.pets.security;
 
-import com.tolkien.pets.model.Role; // 👈 importa el enum
+import com.tolkien.pets.model.Role;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+
     private final JwtUtil jwt;
 
     public JwtFilter(JwtUtil jwt) {
@@ -27,40 +29,35 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest req,
+                                    HttpServletResponse res,
+                                    FilterChain chain) throws ServletException, IOException {
 
-        String auth = req.getHeader(HttpHeaders.AUTHORIZATION);
-        if (auth != null && auth.startsWith("Bearer ")) {
-            String token = auth.substring(7);
+        String authHeader = req.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7).trim();
             try {
-                var jws = jwt.parse(token);
-                Claims c = jws.getBody();
+                Jws<Claims> jws = jwt.parse(token);
+                Claims claims = jws.getBody();
 
-                Long id = ((Number) c.get("id")).longValue();
-                String email = c.getSubject();
+                Long id = claims.get("id", Number.class).longValue();
+                String email = claims.getSubject();
 
                 @SuppressWarnings("unchecked")
-                List<String> roleNames = (List<String>) c.get("roles");           // ["ROLE_USER", "ROLE_ADMIN"]
-
-                // Autoridades para Spring Security (siguen siendo String)
-                var authorities = roleNames.stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-
-                // 👇 Conversión a enums para tu CustomPrincipal
+                List<String> roleNames = (List<String>) claims.get("roles");
                 Set<Role> roleEnums = roleNames.stream()
                         .map(Role::valueOf)
                         .collect(Collectors.toSet());
 
+                var authorities = roleEnums.stream()
+                        .map(r -> new SimpleGrantedAuthority(r.name()))
+                        .collect(Collectors.toSet());
+
                 var principal = new CustomPrincipal(id, email, roleEnums);
-
-                var authentication =
-                        new UsernamePasswordAuthenticationToken(principal, null, authorities);
+                var authentication = new UsernamePasswordAuthenticationToken(principal, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
             } catch (Exception ignored) {
-                // token inválido → se deja la request sin autenticación
+                // token inválido -> request seguirá sin autenticación
             }
         }
         chain.doFilter(req, res);

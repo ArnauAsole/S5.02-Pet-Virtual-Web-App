@@ -6,6 +6,7 @@ import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { CreaturesAPI } from "@/lib/api"
 import { getAllImagesForRace } from "@/lib/utils"
+import type { CreatureClass } from "@/lib/types"
 import {
   Dialog,
   DialogContent,
@@ -18,12 +19,25 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
 import { Check } from "lucide-react"
 
 const RACES = ["Men", "Elfs", "Maiar", "Hobbits", "Orcs", "Dwarfs", "Others"]
-const ALIGNMENTS = ["GOOD", "EVIL", "NEUTRAL"]
+
+const CLASSES: { value: CreatureClass; label: string }[] = [
+  { value: "mago", label: "Mago" },
+  { value: "caballero", label: "Caballero" },
+  { value: "ladron", label: "Ladrón" },
+  { value: "explorador", label: "Explorador" },
+  { value: "clerigo", label: "Clérigo" },
+  { value: "bardo", label: "Bardo" },
+  { value: "druida", label: "Druida" },
+  { value: "paladin", label: "Paladín" },
+  { value: "asesino", label: "Asesino" },
+  { value: "brujo", label: "Brujo" },
+  { value: "monje", label: "Monje" },
+  { value: "barbaro", label: "Bárbaro" },
+]
 
 interface CreateCreatureModalProps {
   open: boolean
@@ -32,13 +46,14 @@ interface CreateCreatureModalProps {
 
 export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalProps) {
   const queryClient = useQueryClient()
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string
+    race: string
+    class: CreatureClass | ""
+  }>({
     name: "",
     race: "",
-    alignment: "",
-    habitat: "",
-    description: "",
-    abilities: "",
+    class: "",
   })
   const [selectedImage, setSelectedImage] = useState<string>("")
 
@@ -51,14 +66,14 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
       setFormData({
         name: "",
         race: "",
-        alignment: "",
-        habitat: "",
-        description: "",
-        abilities: "",
+        class: "",
       })
       setSelectedImage("")
     },
     onError: (error: any) => {
+      console.error("[v0] Create creature error:", error)
+      console.error("[v0] Error response:", error.response?.data)
+      console.error("[v0] Error status:", error.response?.status)
       toast.error(error.response?.data?.message || "Error al crear la criatura")
     },
   })
@@ -66,16 +81,21 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    const abilities = formData.abilities
-      .split(",")
-      .map((a) => a.trim())
-      .filter((a) => a.length > 0)
+    if (!formData.class) {
+      toast.error("Debes seleccionar una clase")
+      return
+    }
 
-    createMutation.mutate({
-      ...formData,
-      abilities,
-      imageUrl: selectedImage,
-    })
+    const creatureData = {
+      name: formData.name,
+      race: formData.race.toLowerCase(),
+      class: formData.class as CreatureClass,
+      imageUrl: selectedImage || undefined,
+    }
+
+    console.log("[v0] Creating creature with data:", creatureData)
+
+    createMutation.mutate(creatureData)
   }
 
   const availableImages = formData.race ? getAllImagesForRace(formData.race) : []
@@ -109,7 +129,7 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
 
             <div className="space-y-2">
               <Label htmlFor="race">Raza *</Label>
-              <Select value={formData.race} onValueChange={handleRaceChange}>
+              <Select value={formData.race} onValueChange={handleRaceChange} required>
                 <SelectTrigger id="race">
                   <SelectValue placeholder="Selecciona una raza" />
                 </SelectTrigger>
@@ -154,63 +174,32 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
               </div>
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="alignment">Alineamiento *</Label>
+            <div className="col-span-2 space-y-2">
+              <Label htmlFor="class">Clase *</Label>
               <Select
-                value={formData.alignment}
-                onValueChange={(value) => setFormData({ ...formData, alignment: value })}
+                value={formData.class}
+                onValueChange={(value) => setFormData({ ...formData, class: value as CreatureClass })}
+                required
               >
-                <SelectTrigger id="alignment">
-                  <SelectValue placeholder="Selecciona alineamiento" />
+                <SelectTrigger id="class">
+                  <SelectValue placeholder="Selecciona una clase" />
                 </SelectTrigger>
                 <SelectContent>
-                  {ALIGNMENTS.map((alignment) => (
-                    <SelectItem key={alignment} value={alignment}>
-                      {alignment}
+                  {CLASSES.map((cls) => (
+                    <SelectItem key={cls.value} value={cls.value}>
+                      {cls.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="habitat">Hábitat</Label>
-              <Input
-                id="habitat"
-                value={formData.habitat}
-                onChange={(e) => setFormData({ ...formData, habitat: e.target.value })}
-                placeholder="Ej: Bosque Negro"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">Descripción</Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Describe la criatura..."
-              rows={3}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="abilities">Habilidades</Label>
-            <Input
-              id="abilities"
-              value={formData.abilities}
-              onChange={(e) => setFormData({ ...formData, abilities: e.target.value })}
-              placeholder="Separadas por comas: Magia, Vuelo, Invisibilidad"
-            />
-            <p className="text-xs text-muted-foreground">Separa las habilidades con comas</p>
           </div>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={createMutation.isPending || !selectedImage}>
+            <Button type="submit" disabled={createMutation.isPending || !selectedImage || !formData.class}>
               {createMutation.isPending ? "Creando..." : "Crear Criatura"}
             </Button>
           </DialogFooter>

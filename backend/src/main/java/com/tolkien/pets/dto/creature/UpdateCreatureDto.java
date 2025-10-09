@@ -1,17 +1,22 @@
 package com.tolkien.pets.dto.creature;
 
-import jakarta.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tolkien.pets.model.CharacterClass;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+import org.hibernate.validator.constraints.URL;
 
-import java.util.List;
+@Data
+public class UpdateCreatureDto {
+    @Size(max = 100)
+    private String name;
 
-public record UpdateCreatureDto(
-        @NotBlank String name,
-        @NotBlank String race,
-        @Size(max = 20) String color,
-        @Min(1) @Max(200) Integer maxHealth,
-        @Min(0) @Max(50) Integer attackBase,
-        @Min(0) @Max(50) Integer defenseBase,
-        List<@Size(max = 20) String> accessories,
-        String imageUrl
-) {
+    @Size(max = 50)
+    private String race;
+
+    @JsonProperty("class")
+    private CharacterClass characterClass; // opcional
+
+    @URL @Size(max = 512)
+    private String imageUrl; // opcional
 }

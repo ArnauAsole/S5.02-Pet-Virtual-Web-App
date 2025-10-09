@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { useQueryClient } from "@tanstack/react-query"
 import { auth } from "@/lib/auth"
 import { CreaturesTable } from "@/components/creatures-table"
 import { CreateCreatureModal } from "@/components/create-creature-modal"
@@ -9,12 +10,14 @@ import { TrainCreatureModal } from "@/components/train-creature-modal"
 import { RestCreatureModal } from "@/components/rest-creature-modal"
 import { BattleArena } from "@/components/battle-arena"
 import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { LogOut, Plus, Swords, Shield } from "lucide-react"
 import { useBackgroundMusic } from "@/hooks/use-background-music"
 import { useSoundEffect } from "@/hooks/use-sound-effect"
 
 export default function DashboardPage() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   useBackgroundMusic(true)
   const playSwordClash = useSoundEffect()
 
@@ -31,8 +34,9 @@ export default function DashboardPage() {
   }, [router])
 
   const handleLogout = () => {
+    queryClient.clear()
     auth.clear()
-    router.push("/login")
+    router.replace("/login")
   }
 
   const handleTrain = (creatureId: number) => {
@@ -65,9 +69,15 @@ export default function DashboardPage() {
     >
       <header className="border-b border-white/10 bg-black/60 backdrop-blur-md">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-white">Tolkien Creatures</h1>
-            <p className="text-sm text-gray-200">Bienvenido, {user?.email}</p>
+          <div className="flex items-center gap-3">
+            <Avatar className="h-10 w-10 border-2 border-white/20">
+              <AvatarImage src={user?.profileImage || "/images/profiles/default.jpg"} alt={user?.email} />
+              <AvatarFallback>{user?.email?.charAt(0).toUpperCase()}</AvatarFallback>
+            </Avatar>
+            <div>
+              <h1 className="text-2xl font-bold text-white">Tolkien Creatures</h1>
+              <p className="text-sm text-gray-200">Bienvenido, {user?.email}</p>
+            </div>
           </div>
           <Button
             variant="outline"

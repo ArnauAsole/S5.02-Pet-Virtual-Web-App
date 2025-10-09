@@ -29,7 +29,6 @@ export default function NewCreaturePage() {
     defaultValues: {
       name: "",
       race: "",
-      color: "",
       maxHealth: 100,
       attackBase: 5,
       defenseBase: 3,
@@ -131,20 +130,6 @@ export default function NewCreaturePage() {
                           </button>
                         ))}
                       </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="color"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Color (opcional)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Ej: Dorado" {...field} />
-                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}

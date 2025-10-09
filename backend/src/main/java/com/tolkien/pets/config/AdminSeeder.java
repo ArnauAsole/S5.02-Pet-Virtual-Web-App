@@ -12,13 +12,16 @@ import java.util.Set;
 
 @Configuration
 public class AdminSeeder {
+
     @Bean
-    CommandLineRunner seedAdmin(UserRepo repo, PasswordEncoder enc) {
-        return args -> {
-            if (repo.findByEmail("admin@tolkien.local").isEmpty()) {
-                var admin = new User(null, "admin@tolkien.local", enc.encode("admin123"), Set.of(Role.ROLE_ADMIN));
-                repo.save(admin);
-            }
-        };
+    public CommandLineRunner seedAdmin(UserRepo userRepo, PasswordEncoder pe) {
+        return args -> userRepo.findByEmail("admin@shire.me").orElseGet(() -> {
+            User u = new User();
+            u.setEmail("admin@shire.me");
+            u.setPassword(pe.encode("Admin123")); // password por defecto en dev
+            u.setRoles(Set.of(Role.ROLE_ADMIN, Role.ROLE_USER));
+            System.out.println("✓ Admin user created: admin@shire.me / password: Admin123");
+            return userRepo.save(u);
+        });
     }
 }

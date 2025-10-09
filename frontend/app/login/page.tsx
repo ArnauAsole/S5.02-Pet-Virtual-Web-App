@@ -22,7 +22,7 @@ type LoginFormData = z.infer<typeof loginSchema>
 export default function LoginPage() {
   const router = useRouter()
   useBackgroundMusic(true)
-  const playSwordClash = useSoundEffect("/sounds/sword-clash.mp3")
+  const playSwordClash = useSoundEffect("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Efecto%20de%20sonido%20de%20katana%20desenfundada%20-%20Sound%20Effects%20%26%20Music%20%28youtube%29-fyrDOqylrPPof3Fge4Ua0G9Ij47LwX.mp3")
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -41,22 +41,44 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     playSwordClash()
 
-    try {
-      const response = await AuthAPI.login(data)
+    console.log("[v0] Login attempt with email:", data.email)
+    console.log("[v0] API URL:", process.env.NEXT_PUBLIC_API_URL)
 
-      auth.setToken(response.token)
-      auth.setUser({
-        token: response.token,
-        roles: [],
-        email: data.email,
-      })
+    try {
+      console.log("[v0] Calling AuthAPI.login...")
+      const response = await AuthAPI.login(data)
+      console.log("[v0] Login response:", response)
+
+      const token = response.token || response.accessToken
+
+      if (!token) {
+        console.log("[v0] ERROR: No token received in response")
+        toast.error("Error: No se recibió token de autenticación")
+        return
+      }
+
+      console.log("[v0] Token received, setting auth...")
+      auth.setToken(token)
 
       toast.success("Sesión iniciada correctamente")
-
       router.push("/dashboard")
     } catch (err: any) {
-      const message = err?.response?.data?.message || "Error de autenticación"
-      toast.error(message)
+      console.log("[v0] Login error:", err)
+      console.log("[v0] Error response:", err.response)
+
+      let errorMessage = "Error de autenticación"
+
+      if (err.code === "ERR_NETWORK" || !err.response) {
+        errorMessage = "No se puede conectar con el servidor. Verifica que la API esté activa en http://localhost:8080"
+      } else if (err.response?.status === 401) {
+        errorMessage = "Email o contraseña incorrectos"
+      } else if (err.response?.status >= 500) {
+        errorMessage = "Error del servidor. Inténtalo más tarde."
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message
+      }
+
+      toast.error(errorMessage)
     }
   }
 
@@ -83,7 +105,7 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="tu@email.com" autoComplete="off" {...field} />
+                      <Input type="email" placeholder="tu@email.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -97,7 +119,7 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Contraseña</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="••••••••" autoComplete="new-password" {...field} />
+                      <Input type="password" placeholder="••••••••" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -1,11 +1,15 @@
 package com.tolkien.pets.security;
 
 import com.tolkien.pets.model.Role;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.Set;
@@ -13,17 +17,21 @@ import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
+
     private final Key key;
     private final long expirationMs;
 
-    public JwtUtil(@Value("${jwt.secret}") String secret,
-                   @Value("${jwt.expiration}") long expirationMs) {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    public JwtUtil(
+            @Value("${jwt.secret}") String secret,
+            @Value("${jwt.expiration-ms}") long expirationMs
+    ) {
+        // Para HS256 la key debe ser suficientemente larga
+        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expirationMs = expirationMs;
     }
 
     public String generateToken(Long id, String email, Set<Role> roles) {
-        var now = new Date();
+        Date now = new Date();
         return Jwts.builder()
                 .setSubject(email)
                 .claim("id", id)
