@@ -1,46 +1,54 @@
 package com.tolkien.pets.controller;
 
-import com.tolkien.pets.dto.user.UserDto;
-import com.tolkien.pets.service.UserService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.tolkien.pets.model.Creature;
+import com.tolkien.pets.model.User;
+import com.tolkien.pets.repo.CreatureRepo;
+import com.tolkien.pets.repo.RefreshTokenRepo;
+import com.tolkien.pets.repo.UserRepo;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Admin")
 @RestController
 @RequestMapping("/api/admin")
-@SecurityRequirement(name = "bearer-key")
-@PreAuthorize("hasRole('ADMIN')") // <- TODA LA CLASE SOLO ADMIN
 public class AdminController {
 
-    private final UserService userService;
+    private final UserRepo users;
+    private final CreatureRepo creatures;
+    private final RefreshTokenRepo tokens;
 
-    public AdminController(UserService userService) {
-        this.userService = userService;
+    public AdminController(UserRepo users, CreatureRepo creatures, RefreshTokenRepo tokens) {
+        this.users = users;
+        this.creatures = creatures;
+        this.tokens = tokens;
     }
 
     @GetMapping("/users")
-    public List<UserDto> listUsers() {
-        return userService.listAll();
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(users.findAll());
     }
 
-    @PostMapping("/users/{id}/grant-admin")
-    public UserDto grantAdmin(@PathVariable Long id) {
-        return userService.grantAdmin(id);
+    @GetMapping("/creatures")
+    public ResponseEntity<List<Creature>> getAllCreatures() {
+        return ResponseEntity.ok(creatures.findAll());
     }
 
-    @PostMapping("/users/{id}/revoke-admin")
-    public UserDto revokeAdmin(@PathVariable Long id) {
-        return userService.revokeAdmin(id);
-    }
-
+    @Transactional
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.delete(id);
+        User user = users.findById(id).orElseThrow();
+        tokens.deleteByUser(user);
+        creatures.deleteAll(creatures.findByOwnerId(id));
+        users.delete(user);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Transactional
+    @DeleteMapping("/creatures/{id}")
+    public ResponseEntity<Void> deleteCreature(@PathVariable Long id) {
+        creatures.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

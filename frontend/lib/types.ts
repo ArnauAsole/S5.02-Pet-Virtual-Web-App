@@ -18,9 +18,9 @@ export interface Creature {
   race: string
   class: CreatureClass
   level: number
-  experience: number // Changed from xp
-  attack: number // Changed from attackBase
-  defense: number // Changed from defenseBase
+  experience: number
+  attack: number
+  defense: number
   health: number
   inCombat: boolean
   ownerId: number
@@ -32,10 +32,6 @@ export interface CreateCreatureData {
   race: string
   class: CreatureClass
   imageUrl?: string
-  alignment?: string
-  habitat?: string
-  description?: string
-  abilities?: string[]
 }
 
 export interface UpdateCreatureData {
@@ -43,10 +39,6 @@ export interface UpdateCreatureData {
   race?: string
   class?: CreatureClass
   imageUrl?: string
-  alignment?: string
-  habitat?: string
-  description?: string
-  abilities?: string[]
 }
 
 export interface PaginatedResponse<T> {

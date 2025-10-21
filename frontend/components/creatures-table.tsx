@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { CreaturesAPI } from "@/lib/api"
 import { auth } from "@/lib/auth"
@@ -42,12 +42,22 @@ export function CreaturesTable({ onTrain, onRest, onBattle }: CreaturesTableProp
   const [searchTerm, setSearchTerm] = useState("")
   const debouncedSearch = useDebounce(searchTerm, 500)
   const [selectedRace, setSelectedRace] = useState<string>("all")
-
   const [deleteId, setDeleteId] = useState<number | null>(null)
+  const [queryEnabled, setQueryEnabled] = useState(false)
+
+  useEffect(() => {
+    const token = auth.getToken()
+    console.log("[v0] CreaturesTable mounted, token present:", !!token)
+    if (token) {
+      setQueryEnabled(true)
+    }
+  }, [])
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["creatures", debouncedSearch, selectedRace],
+    enabled: queryEnabled,
     queryFn: async () => {
+      console.log("[v0] Fetching creatures...")
       const response = await CreaturesAPI.list()
       let creatures = response.content || []
 

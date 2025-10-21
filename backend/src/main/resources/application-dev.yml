@@ -1,22 +1,26 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:tolkienpets;DB_CLOSE_DELAY=-1;MODE=MySQL
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:mysql://localhost:3306/tolkienCreatures?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Europe/Madrid
+    username: root
+    password: Arestom123!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
-  h2:
-    console:
-      enabled: true
-      path: /h2
 
-auth:
-  refresh:
-    cookie:
-      same-site: Lax
-      secure: false
+  web:
+    cors:
+      allowed-origins: "http://localhost:3000"
+      allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+      allowed-headers: "*"
+      allow-credentials: true
+
+jwt:
+  secret: mi_clave_super_secreta_para_firmar_tokens_123456789
+  expiration: 86400000  # 1 día (en milisegundos)

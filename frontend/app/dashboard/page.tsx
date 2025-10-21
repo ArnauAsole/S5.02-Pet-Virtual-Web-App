@@ -21,6 +21,7 @@ export default function DashboardPage() {
   useBackgroundMusic(true)
   const playSwordClash = useSoundEffect()
 
+  const [authReady, setAuthReady] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showTrainModal, setShowTrainModal] = useState(false)
   const [showRestModal, setShowRestModal] = useState(false)
@@ -28,8 +29,16 @@ export default function DashboardPage() {
   const [selectedCreatureId, setSelectedCreatureId] = useState<number | null>(null)
 
   useEffect(() => {
-    if (!auth.isAuthed()) {
+    console.log("[v0] Dashboard mounted, checking auth...")
+    const token = auth.getToken()
+    console.log("[v0] Token present:", !!token)
+
+    if (!token) {
+      console.log("[v0] No token found, redirecting to login")
       router.push("/login")
+    } else {
+      console.log("[v0] Token found, setting auth ready")
+      setAuthReady(true)
     }
   }, [router])
 
@@ -56,6 +65,14 @@ export default function DashboardPage() {
 
   const user = auth.getUser()
   const isAdmin = auth.isAdmin()
+
+  if (!authReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <p className="text-white">Cargando...</p>
+      </div>
+    )
+  }
 
   return (
     <div

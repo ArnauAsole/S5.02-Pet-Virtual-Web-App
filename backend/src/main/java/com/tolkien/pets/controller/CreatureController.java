@@ -1,23 +1,17 @@
 package com.tolkien.pets.controller;
 
-import com.tolkien.pets.dto.creature.CreateCreatureDto;
-import com.tolkien.pets.dto.creature.CreatureDto;
-import com.tolkien.pets.dto.creature.UpdateCreatureDto;
+import com.tolkien.pets.model.Creature;
 import com.tolkien.pets.security.CustomPrincipal;
 import com.tolkien.pets.service.CreatureService;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
-@Tag(name = "Creatures")
-@SecurityRequirement(name = "bearer-key")
 @RestController
 @RequestMapping("/api/creatures")
 public class CreatureController {
@@ -28,71 +22,195 @@ public class CreatureController {
         this.service = service;
     }
 
-    /* Helpers */
-    private Long userId(Authentication a) {
-        return ((CustomPrincipal) a.getPrincipal()).id();
-    }
-    private boolean isAdmin(Authentication a) {
-        return ((CustomPrincipal) a.getPrincipal()).roles()
-                .stream().anyMatch(r -> r.equals("ROLE_ADMIN"));
+    // Obtener el CustomPrincipal de forma segura
+    private CustomPrincipal getPrincipal(Authentication auth) {
+        if (auth == null || auth.getPrincipal() == null) {
+            throw new IllegalStateException("No hay usuario autenticado.");
+        }
+
+        Object principal = auth.getPrincipal();
+        if (principal instanceof CustomPrincipal cp) {
+            return cp;
+        }
+
+        throw new IllegalStateException(
+                "Tipo inesperado de principal: " + principal.getClass().getName()
+        );
     }
 
-    /* Listar mis criaturas (por defecto excluye las que están en combate) */
+    private Long getUserId(Authentication auth) {
+        return getPrincipal(auth).getId();
+    }
+
+    private boolean isAdmin(Authentication auth) {
+        return getPrincipal(auth)
+                .getRoles()
+                .stream()
+                .anyMatch(r -> r.name().equals("ROLE_ADMIN"));
+    }
+
+    /* Listar criaturas del usuario autenticado */
     @GetMapping
-    public List<CreatureDto> listMine(
-            @Parameter(hidden = true) Authentication a,
-            @RequestParam(defaultValue = "false") boolean includeInCombat) {
-        return service.listMine(userId(a), includeInCombat);
+    public ResponseEntity<?> listAll(@Parameter(hidden = true) Authentication auth) {
+        try {
+            CustomPrincipal cp = getPrincipal(auth);
+            Long userId = cp.getId();
+
+            List<Creature> creatures = service.getCreaturesByOwnerId(userId);
+
+            return ResponseEntity.ok(creatures);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Error de autenticación: " + e.getMessage());
+        }
     }
 
-    /* Obtener una criatura (si no eres admin, debe ser tuya) */
+    /* Obtener una criatura por ID */
     @GetMapping("/{id}")
-    public CreatureDto getById(@PathVariable Long id,
-                               @Parameter(hidden = true) Authentication a) {
-        return service.getById(id, userId(a), isAdmin(a));
+    public ResponseEntity<?> getById(
+            @PathVariable Long id,
+            @Parameter(hidden = true) Authentication auth) {
+
+        try {
+            boolean admin = isAdmin(auth);
+            Long userId = getUserId(auth);
+
+            return service.getCreatureById(id)
+                    .filter(c -> admin || (c.getOwner() != null && c.getOwner().getId().equals(userId)))
+                    .<ResponseEntity<?>>map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                            .body("Criatura no encontrada o sin acceso."));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Error de autenticación: " + e.getMessage());
+        }
     }
 
-    /* Crear criatura */
+    /* Crear una nueva criatura */
     @PostMapping
-    public ResponseEntity<CreatureDto> create(@Valid @RequestBody CreateCreatureDto dto,
-                                              @Parameter(hidden = true) Authentication a) {
-        CreatureDto created = service.create(dto, userId(a)); // <-- orden corregido
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    public ResponseEntity<?> createCreature(
+            @RequestBody Creature creature,
+            @Parameter(hidden = true) Authentication auth) {
+
+        try {
+            CustomPrincipal cp = getPrincipal(auth);
+            Creature created = service.createCreature(creature, cp.getUsername());
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Error de autenticación: " + e.getMessage());
+        }
     }
 
-    /* Actualizar criatura */
-    @PutMapping("/{id}")
-    public CreatureDto update(@PathVariable Long id,
-                              @Valid @RequestBody UpdateCreatureDto dto,
-                              @Parameter(hidden = true) Authentication a) {
-        return service.update(id, dto, userId(a), isAdmin(a)); // <-- orden corregido
-    }
-
-    /* Borrar criatura */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id,
-                                       @Parameter(hidden = true) Authentication a) {
-        service.delete(id, userId(a), isAdmin(a));
-        return ResponseEntity.noContent().build();
-    }
-
-    /* Acciones */
+    /* Entrenar una criatura */
     @PutMapping("/{id}/train")
-    public CreatureDto train(@PathVariable Long id,
-                             @Parameter(hidden = true) Authentication a) {
-        return service.train(id, userId(a), isAdmin(a));
+    public ResponseEntity<?> trainCreature(
+            @PathVariable Long id,
+            @Parameter(hidden = true) Authentication auth) {
+
+        try {
+            boolean admin = isAdmin(auth);
+            Long userId = getUserId(auth);
+            String userEmail = getPrincipal(auth).getUsername();
+
+            // Verificar que la criatura existe y el usuario tiene permisos
+            Optional<Creature> creatureOpt = service.getCreatureById(id);
+
+            if (creatureOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Criatura no encontrada.");
+            }
+
+            Creature creature = creatureOpt.get();
+            boolean isOwner = creature.getOwner() != null && creature.getOwner().getId().equals(userId);
+
+            if (!admin && !isOwner) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("No tienes permiso para entrenar esta criatura.");
+            }
+
+            // Entrenar la criatura
+            Creature trained = service.trainCreature(id, userEmail);
+            return ResponseEntity.ok(trained);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al entrenar criatura: " + e.getMessage());
+        }
     }
 
+    /* Hacer descansar una criatura */
     @PutMapping("/{id}/rest")
-    public CreatureDto rest(@PathVariable Long id,
-                            @Parameter(hidden = true) Authentication a) {
-        return service.rest(id, userId(a), isAdmin(a));
+    public ResponseEntity<?> restCreature(
+            @PathVariable Long id,
+            @Parameter(hidden = true) Authentication auth) {
+
+        try {
+            boolean admin = isAdmin(auth);
+            Long userId = getUserId(auth);
+            String userEmail = getPrincipal(auth).getUsername();
+
+            // Verificar que la criatura existe y el usuario tiene permisos
+            Optional<Creature> creatureOpt = service.getCreatureById(id);
+
+            if (creatureOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Criatura no encontrada.");
+            }
+
+            Creature creature = creatureOpt.get();
+            boolean isOwner = creature.getOwner() != null && creature.getOwner().getId().equals(userId);
+
+            if (!admin && !isOwner) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("No tienes permiso para hacer descansar esta criatura.");
+            }
+
+            // Hacer descansar la criatura
+            Creature rested = service.restCreature(id, userEmail);
+            return ResponseEntity.ok(rested);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al hacer descansar criatura: " + e.getMessage());
+        }
     }
 
-    @PutMapping("/{attackerId}/fight/{opponentId}")
-    public CreatureDto fight(@PathVariable Long attackerId,
-                             @PathVariable Long opponentId,
-                             @Parameter(hidden = true) Authentication a) {
-        return service.fight(attackerId, opponentId, userId(a), isAdmin(a));
+    /* Eliminar una criatura */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCreature(
+            @PathVariable Long id,
+            @Parameter(hidden = true) Authentication auth) {
+
+        try {
+            boolean admin = isAdmin(auth);
+            Long userId = getUserId(auth);
+            String userEmail = getPrincipal(auth).getUsername();
+
+            // Verificar que la criatura existe y el usuario tiene permisos
+            Optional<Creature> creatureOpt = service.getCreatureById(id);
+
+            if (creatureOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Criatura no encontrada.");
+            }
+
+            Creature creature = creatureOpt.get();
+            boolean isOwner = creature.getOwner() != null && creature.getOwner().getId().equals(userId);
+
+            if (!admin && !isOwner) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("No tienes permiso para eliminar esta criatura.");
+            }
+
+            // Eliminar la criatura
+            service.deleteCreature(id, userEmail);
+            return ResponseEntity.noContent().build();
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al eliminar criatura: " + e.getMessage());
+        }
     }
 }

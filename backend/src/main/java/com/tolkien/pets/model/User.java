@@ -1,18 +1,23 @@
 package com.tolkien.pets.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
 public class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
@@ -24,21 +29,71 @@ public class User {
     @Column(name = "role")
     private Set<Role> roles = new HashSet<>();
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Creature> creatures;
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<RefreshToken> refreshTokens;
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    // =====================
+    // Getters and Setters
+    // =====================
 
-    public String getProfileImage() { return profileImage; }
-    public void setProfileImage(String profileImage) { this.profileImage = profileImage; }
+    public Long getId() {
+        return id;
+    }
 
-    public Set<Role> getRoles() { return roles; }
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
     public void setRoles(Set<Role> roles) {
-        this.roles.clear();
-        if (roles != null) this.roles.addAll(roles);
+        this.roles = roles;
+    }
+
+    public List<Creature> getCreatures() {
+        return creatures;
+    }
+
+    public void setCreatures(List<Creature> creatures) {
+        this.creatures = creatures;
+    }
+
+    public List<RefreshToken> getRefreshTokens() {
+        return refreshTokens;
+    }
+
+    public void setRefreshTokens(List<RefreshToken> refreshTokens) {
+        this.refreshTokens = refreshTokens;
     }
 }

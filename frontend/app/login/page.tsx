@@ -39,6 +39,9 @@ export default function LoginPage() {
   }, [router])
 
   const onSubmit = async (data: LoginFormData) => {
+    console.log("[v0] ===== LOGIN FORM SUBMITTED =====")
+    console.log("[v0] Form data:", data)
+
     playSwordClash()
 
     console.log("[v0] Login attempt with email:", data.email)

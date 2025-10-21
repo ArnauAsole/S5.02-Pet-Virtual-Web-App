@@ -60,6 +60,7 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
   const createMutation = useMutation({
     mutationFn: CreaturesAPI.create,
     onSuccess: () => {
+      console.log("[v0] Creature created successfully, invalidating queries")
       queryClient.invalidateQueries({ queryKey: ["creatures"] })
       toast.success("Criatura creada correctamente")
       onOpenChange(false)
@@ -81,19 +82,39 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
+    console.log("[v0] ===== CREATE CREATURE FORM SUBMITTED =====")
+    console.log("[v0] Form data before validation:", formData)
+    console.log("[v0] Selected image:", selectedImage)
+
     if (!formData.class) {
+      console.error("[v0] Class is missing!")
       toast.error("Debes seleccionar una clase")
       return
     }
 
-    const creatureData = {
-      name: formData.name,
-      race: formData.race.toLowerCase(),
-      class: formData.class as CreatureClass,
-      imageUrl: selectedImage || undefined,
+    if (!selectedImage) {
+      console.error("[v0] Image is missing!")
+      toast.error("Debes seleccionar una imagen")
+      return
     }
 
-    console.log("[v0] Creating creature with data:", creatureData)
+    const creatureData: {
+      name: string
+      race: string
+      characterClass: CreatureClass
+      imageUrl: string
+    } = {
+      name: formData.name,
+      race: formData.race.toLowerCase(),
+      characterClass: formData.class as CreatureClass,
+      imageUrl: selectedImage,
+    }
+
+    console.log("[v0] ===== CREATURE DATA TO SEND =====")
+    console.log("[v0] Full object:", JSON.stringify(creatureData, null, 2))
+    console.log("[v0] characterClass value:", creatureData.characterClass)
+    console.log("[v0] characterClass type:", typeof creatureData.characterClass)
+    console.log("[v0] imageUrl:", creatureData.imageUrl)
 
     createMutation.mutate(creatureData)
   }
@@ -178,7 +199,10 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
               <Label htmlFor="class">Clase *</Label>
               <Select
                 value={formData.class}
-                onValueChange={(value) => setFormData({ ...formData, class: value as CreatureClass })}
+                onValueChange={(value) => {
+                  console.log("[v0] Class selected:", value)
+                  setFormData({ ...formData, class: value as CreatureClass })
+                }}
                 required
               >
                 <SelectTrigger id="class">
@@ -199,7 +223,7 @@ export function CreateCreatureModal({ open, onOpenChange }: CreateCreatureModalP
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={createMutation.isPending || !selectedImage || !formData.class}>
+            <Button type="submit" disabled={createMutation.isPending || !formData.class || !selectedImage}>
               {createMutation.isPending ? "Creando..." : "Crear Criatura"}
             </Button>
           </DialogFooter>

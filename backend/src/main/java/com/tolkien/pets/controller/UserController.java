@@ -1,48 +1,38 @@
 package com.tolkien.pets.controller;
 
-import com.tolkien.pets.dto.user.ChangePasswordDto;
-import com.tolkien.pets.dto.user.UpdateProfileDto;
-import com.tolkien.pets.dto.user.UserDto;
-import com.tolkien.pets.security.CustomPrincipal;
-import com.tolkien.pets.service.UserService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+import com.tolkien.pets.model.User;
+import com.tolkien.pets.repo.UserRepo;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Users (self-service)")
+import java.util.Optional;
+
 @RestController
-@RequestMapping("/api/users")
-@SecurityRequirement(name = "bearer-key")
+@RequestMapping("/api/user")
 public class UserController {
 
-    private final UserService userService;
-    public UserController(UserService userService) { this.userService = userService; }
+    private final UserRepo userRepo;
 
-    private Long userId(Authentication a) { return ((CustomPrincipal) a.getPrincipal()).id(); }
-
-    @GetMapping("/me")
-    public UserDto me(Authentication a) {
-        return userService.getById(userId(a));
+    public UserController(UserRepo userRepo) {
+        this.userRepo = userRepo;
     }
 
-    @PutMapping("/me")
-    public UserDto updateMe(@Valid @RequestBody UpdateProfileDto dto, Authentication a) {
-        return userService.updateProfile(userId(a), dto);
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getById(@PathVariable Long id) {
+        Optional<User> user = userRepo.findById(id);
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/me/password")
-    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordDto dto, Authentication a) {
-        userService.changePassword(userId(a), dto);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateProfile(@PathVariable Long id, @RequestBody User updatedData) {
+        return userRepo.findById(id).map(existing -> {
+            // Solo se actualizan campos editables del perfil
+            existing.setEmail(updatedData.getEmail());
+            existing.setProfileImage(updatedData.getProfileImage());
+            // ⚠️ No cambiamos contraseña aquí (eso iría en otro endpoint)
+            userRepo.save(existing);
+            return ResponseEntity.ok(existing);
+        }).orElse(ResponseEntity.notFound().build());
     }
-
-    // (Opcional) Borrar cuenta propia:
-    // @DeleteMapping("/me")
-    // public ResponseEntity<Void> deleteMe(Authentication a) {
-    //     userService.delete(userId(a));
-    //     return ResponseEntity.noContent().build();
-    // }
 }

@@ -52,6 +52,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleOther(Exception ex, HttpServletRequest req) {
+        // AÑADIR: Imprimir el stack trace completo en los logs
+        System.err.println("========== EXCEPTION CAUGHT ==========");
+        System.err.println("Exception type: " + ex.getClass().getName());
+        System.err.println("Message: " + ex.getMessage());
+        ex.printStackTrace();
+        System.err.println("======================================");
+
         return build(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), req);
     }
 
