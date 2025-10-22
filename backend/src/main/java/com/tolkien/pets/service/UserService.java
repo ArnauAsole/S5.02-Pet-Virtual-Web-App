@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface UserService {
 
+
     Optional<User> findByEmail(String email);
 
     User save(User user);
@@ -16,6 +17,10 @@ public interface UserService {
     void deleteById(Long id);
 
     Optional<User> findById(Long id);
+
+    List<User> getAllUsers();
+    void deleteUser(Long id);
+    User getUserById(Long id);
 
     // 🔥 Añadido para integrarse con JwtFilter
     UserDetails loadUserByUsername(String username);

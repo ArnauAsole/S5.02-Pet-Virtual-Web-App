@@ -1,24 +1,29 @@
 package com.tolkien.pets.service;
 
-import com.tolkien.pets.model.Creature;
-
+import com.tolkien.pets.dto.creature.CreateCreatureDto;
+import com.tolkien.pets.dto.creature.UpdateCreatureDto;
+import com.tolkien.pets.dto.creature.CreatureDto;
 import java.util.List;
-import java.util.Optional;
 
 public interface CreatureService {
 
-    List<Creature> getAllCreatures();
+    CreatureDto createCreature(CreateCreatureDto dto, String userEmail);
 
-    List<Creature> getCreaturesByOwnerId(Long ownerId);
+    CreatureDto updateCreature(Long id, UpdateCreatureDto dto, String userEmail);
 
-    Optional<Creature> getCreatureById(Long id);
+    List<CreatureDto> getCreaturesByUserId(Long userId);
 
-    Creature createCreature(Creature creature, String ownerEmail);
+    List<CreatureDto> getCreaturesByOwnerId(Long ownerId);
 
-    // Métodos nuevos que faltan
-    Creature trainCreature(Long id, String userEmail);
-
-    Creature restCreature(Long id, String userEmail);
+    List<CreatureDto> getAllCreatures();
 
     void deleteCreature(Long id, String userEmail);
+
+    CreatureDto trainCreature(Long creatureId, String userEmail);
+
+    CreatureDto restCreature(Long creatureId, String userEmail);
+
+    CreatureDto getCreatureById(Long id, String userEmail);
+
+    CreatureDto resolveCombat(Long creatureId, int damageReceived, boolean won, String userEmail);
 }

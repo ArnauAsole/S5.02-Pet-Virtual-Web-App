@@ -27,6 +27,10 @@ public class CustomPrincipal implements UserDetails {
         return id;
     }
 
+    public String getEmail() {
+        return email; // ✅ CORREGIDO: devuelve el campo real
+    }
+
     public Set<Role> getRoles() {
         return roles;
     }
@@ -45,7 +49,7 @@ public class CustomPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return email; // ⚙️ Esto hace que Spring use el email como username
     }
 
     @Override

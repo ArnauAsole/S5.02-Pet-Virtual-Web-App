@@ -28,6 +28,8 @@ interface BattleState {
   enemyHP: number
   playerMaxHP: number
   enemyMaxHP: number
+  playerTotalDamage: number
+  enemyTotalDamage: number
   playerDefending: boolean
   enemyDefending: boolean
   turn: "player" | "enemy"
@@ -55,6 +57,8 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
     enemyHP: 100,
     playerMaxHP: 100,
     enemyMaxHP: 100,
+    playerTotalDamage: 0,
+    enemyTotalDamage: 0,
     playerDefending: false,
     enemyDefending: false,
     turn: "player",
@@ -88,6 +92,8 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
       enemyHP: enemy.health,
       playerMaxHP: player.health,
       enemyMaxHP: enemy.health,
+      playerTotalDamage: 0,
+      enemyTotalDamage: 0,
       playerDefending: false,
       enemyDefending: false,
       turn: "player",
@@ -104,12 +110,13 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
     return Math.floor(baseDamage * modifier)
   }
 
-  const updateCreatureHealth = async (creatureId: number, newHealth: number) => {
+  const resolveCombatResult = async (creatureId: number, damageReceived: number, won: boolean) => {
     try {
-      await CreaturesAPI.update(creatureId, { health: Math.max(1, newHealth) })
+      await CreaturesAPI.resolveCombat(creatureId, damageReceived, won)
       queryClient.invalidateQueries({ queryKey: ["creatures"] })
     } catch (error) {
-      console.error("Error updating creature health:", error)
+      console.error("Error resolving combat:", error)
+      toast.error("Error al resolver el combate")
     }
   }
 
@@ -123,11 +130,13 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
     let newEnemyHP = battle.enemyHP
     let newPlayerDefending = false
     let newEnemyDefending = battle.enemyDefending
+    let playerDamageTaken = battle.playerTotalDamage
+    let enemyDamageTaken = battle.enemyTotalDamage
 
-    // Player action
     if (action === "attack") {
       const damage = calculateDamage(battle.playerCreature!, battle.enemyDefending)
       newEnemyHP = Math.max(1, battle.enemyHP - damage)
+      enemyDamageTaken += damage
       newLog.push(`${battle.playerCreature!.name} ataca e inflige ${damage} de daño!`)
       newEnemyDefending = false
     } else if (action === "defend") {
@@ -142,18 +151,19 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
         winner: "enemy",
         isAnimating: false,
       })
-      updateCreatureHealth(battle.playerCreature!.id, battle.playerHP)
-      updateCreatureHealth(battle.enemyCreature!.id, battle.enemyHP)
+      resolveCombatResult(battle.playerCreature!.id, playerDamageTaken, false)
+      resolveCombatResult(battle.enemyCreature!.id, enemyDamageTaken, true)
       return
     }
 
-    // Check if enemy is defeated
     if (newEnemyHP <= 1) {
       newLog.push(`¡${battle.playerCreature!.name} ha ganado el combate!`)
       newLog.push(`${battle.playerCreature!.name} gana 30 puntos de experiencia!`)
       setBattle({
         ...battle,
         enemyHP: 1,
+        playerTotalDamage: playerDamageTaken,
+        enemyTotalDamage: enemyDamageTaken,
         log: newLog,
         phase: "result",
         winner: "player",
@@ -162,18 +172,18 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
       toast.success("¡Victoria!", {
         description: `${battle.playerCreature!.name} ha derrotado a ${battle.enemyCreature!.name}`,
       })
-      updateCreatureHealth(battle.playerCreature!.id, newPlayerHP)
-      updateCreatureHealth(battle.enemyCreature!.id, 1)
+      resolveCombatResult(battle.playerCreature!.id, playerDamageTaken, true)
+      resolveCombatResult(battle.enemyCreature!.id, enemyDamageTaken, false)
       return
     }
 
-    // Enemy turn
     setTimeout(() => {
       const enemyAction = Math.random() > 0.7 ? "defend" : "attack"
 
       if (enemyAction === "attack") {
         const damage = calculateDamage(battle.enemyCreature!, newPlayerDefending)
         newPlayerHP = Math.max(1, newPlayerHP - damage)
+        playerDamageTaken += damage
         newLog.push(`${battle.enemyCreature!.name} ataca e inflige ${damage} de daño!`)
         newPlayerDefending = false
       } else {
@@ -181,13 +191,14 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
         newLog.push(`${battle.enemyCreature!.name} se defiende!`)
       }
 
-      // Check if player is defeated
       if (newPlayerHP <= 1) {
         newLog.push(`${battle.enemyCreature!.name} ha ganado el combate!`)
         newLog.push(`${battle.enemyCreature!.name} gana 30 puntos de experiencia!`)
         setBattle({
           ...battle,
           playerHP: 1,
+          playerTotalDamage: playerDamageTaken,
+          enemyTotalDamage: enemyDamageTaken,
           log: newLog,
           phase: "result",
           winner: "enemy",
@@ -196,8 +207,8 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
         toast.error("Derrota", {
           description: `${battle.enemyCreature!.name} ha derrotado a ${battle.playerCreature!.name}`,
         })
-        updateCreatureHealth(battle.playerCreature!.id, 1)
-        updateCreatureHealth(battle.enemyCreature!.id, newEnemyHP)
+        resolveCombatResult(battle.playerCreature!.id, playerDamageTaken, false)
+        resolveCombatResult(battle.enemyCreature!.id, enemyDamageTaken, true)
         return
       }
 
@@ -205,6 +216,8 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
         ...battle,
         playerHP: newPlayerHP,
         enemyHP: newEnemyHP,
+        playerTotalDamage: playerDamageTaken,
+        enemyTotalDamage: enemyDamageTaken,
         playerDefending: newPlayerDefending,
         enemyDefending: newEnemyDefending,
         log: newLog,
@@ -217,6 +230,8 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
       ...battle,
       playerHP: newPlayerHP,
       enemyHP: newEnemyHP,
+      playerTotalDamage: playerDamageTaken,
+      enemyTotalDamage: enemyDamageTaken,
       playerDefending: newPlayerDefending,
       enemyDefending: newEnemyDefending,
       log: newLog,
@@ -232,6 +247,8 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
       enemyHP: 100,
       playerMaxHP: 100,
       enemyMaxHP: 100,
+      playerTotalDamage: 0,
+      enemyTotalDamage: 0,
       playerDefending: false,
       enemyDefending: false,
       turn: "player",
@@ -246,7 +263,7 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Swords className="h-5 w-5" />
@@ -302,70 +319,92 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
 
         {(battle.phase === "battle" || battle.phase === "result") && battle.playerCreature && battle.enemyCreature && (
           <div className="space-y-4 py-4">
-            {/* Battle Status */}
-            <div className="grid gap-4 md:grid-cols-2">
-              {/* Player */}
-              <div
-                className={`space-y-2 p-4 border rounded-lg bg-blue-50 dark:bg-blue-950/20 transition-all duration-300 ${
-                  battle.turn === "player" && battle.phase === "battle" ? "ring-2 ring-blue-500 shadow-lg" : ""
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold">{battle.playerCreature.name}</h3>
-                  <Badge variant="secondary">{battle.playerCreature.race}</Badge>
-                </div>
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-1">
-                      <Heart className="h-4 w-4 text-red-500" />
-                      HP
-                    </span>
-                    <span>
-                      {battle.playerHP}/{battle.playerMaxHP}
-                    </span>
-                  </div>
-                  <Progress value={(battle.playerHP / battle.playerMaxHP) * 100} className="h-2" />
-                </div>
-                {battle.playerDefending && (
-                  <Badge variant="outline" className="gap-1 animate-pulse">
-                    <Shield className="h-3 w-3" />
-                    Defendiendo
-                  </Badge>
-                )}
-              </div>
-
-              {/* Enemy */}
-              <div
-                className={`space-y-2 p-4 border rounded-lg bg-red-50 dark:bg-red-950/20 transition-all duration-300 ${
-                  battle.turn === "enemy" && battle.phase === "battle" ? "ring-2 ring-red-500 shadow-lg" : ""
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold">{battle.enemyCreature.name}</h3>
-                  <Badge variant="secondary">{battle.enemyCreature.race}</Badge>
-                </div>
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-1">
-                      <Heart className="h-4 w-4 text-red-500" />
-                      HP
-                    </span>
-                    <span>
-                      {battle.enemyHP}/{battle.enemyMaxHP}
-                    </span>
-                  </div>
-                  <Progress value={(battle.enemyHP / battle.enemyMaxHP) * 100} className="h-2" />
-                </div>
-                {battle.enemyDefending && (
-                  <Badge variant="outline" className="gap-1 animate-pulse">
-                    <Shield className="h-3 w-3" />
-                    Defendiendo
-                  </Badge>
-                )}
+            <div className="relative w-full h-48 rounded-lg overflow-hidden mb-4">
+              <img src="/images/battle-vs.jpg" alt="Battle Arena" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-6xl font-bold text-white drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]">VS</div>
               </div>
             </div>
 
-            {/* Battle Log */}
+            <div className="grid gap-6 md:grid-cols-2">
+              <div
+                className={`space-y-3 p-6 border rounded-lg bg-blue-50 dark:bg-blue-950/20 transition-all duration-300 ${
+                  battle.turn === "player" && battle.phase === "battle" ? "ring-2 ring-blue-500 shadow-lg" : ""
+                }`}
+              >
+                <div className="flex flex-col items-center gap-4">
+                  <img
+                    src={battle.playerCreature.imageUrl || "/placeholder.svg"}
+                    alt={battle.playerCreature.name}
+                    className="h-40 w-40 rounded-lg object-cover border-2 border-blue-500 shadow-md"
+                  />
+                  <div className="w-full space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold text-lg">{battle.playerCreature.name}</h3>
+                      <Badge variant="secondary">{battle.playerCreature.race}</Badge>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm font-medium">
+                        <span className="flex items-center gap-1.5">
+                          <Heart className="h-4 w-4 text-red-500" />
+                          HP
+                        </span>
+                        <span className="tabular-nums">
+                          {battle.playerHP}/{battle.playerMaxHP}
+                        </span>
+                      </div>
+                      <Progress value={(battle.playerHP / battle.playerMaxHP) * 100} className="h-3" />
+                    </div>
+                    {battle.playerDefending && (
+                      <Badge variant="outline" className="gap-1 animate-pulse w-full justify-center">
+                        <Shield className="h-3 w-3" />
+                        Defendiendo
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div
+                className={`space-y-3 p-6 border rounded-lg bg-red-50 dark:bg-red-950/20 transition-all duration-300 ${
+                  battle.turn === "enemy" && battle.phase === "battle" ? "ring-2 ring-red-500 shadow-lg" : ""
+                }`}
+              >
+                <div className="flex flex-col items-center gap-4">
+                  <img
+                    src={battle.enemyCreature.imageUrl || "/placeholder.svg"}
+                    alt={battle.enemyCreature.name}
+                    className="h-40 w-40 rounded-lg object-cover border-2 border-red-500 shadow-md"
+                  />
+                  <div className="w-full space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold text-lg">{battle.enemyCreature.name}</h3>
+                      <Badge variant="secondary">{battle.enemyCreature.race}</Badge>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm font-medium">
+                        <span className="flex items-center gap-1.5">
+                          <Heart className="h-4 w-4 text-red-500" />
+                          HP
+                        </span>
+                        <span className="tabular-nums">
+                          {battle.enemyHP}/{battle.enemyMaxHP}
+                        </span>
+                      </div>
+                      <Progress value={(battle.enemyHP / battle.enemyMaxHP) * 100} className="h-3" />
+                    </div>
+                    {battle.enemyDefending && (
+                      <Badge variant="outline" className="gap-1 animate-pulse w-full justify-center">
+                        <Shield className="h-3 w-3" />
+                        Defendiendo
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="border rounded-lg p-4 bg-muted/50 max-h-40 overflow-y-auto">
               <h4 className="text-sm font-semibold mb-2">Registro de Combate</h4>
               <div className="space-y-1">
@@ -377,7 +416,6 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
               </div>
             </div>
 
-            {/* Actions - Enhanced with animations and better styling */}
             {battle.phase === "battle" && (
               <div className="relative">
                 {battle.turn === "player" && (

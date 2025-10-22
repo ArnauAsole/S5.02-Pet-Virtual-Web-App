@@ -14,7 +14,7 @@ public class UpdateCreatureDto {
     @Size(max = 50)
     private String race;
 
-    @JsonProperty("class")
+    @JsonProperty("characterClass")
     private CharacterClass characterClass; // opcional
 
     @URL @Size(max = 512)

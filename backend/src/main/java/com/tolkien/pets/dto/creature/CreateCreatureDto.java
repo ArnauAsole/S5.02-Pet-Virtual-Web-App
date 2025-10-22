@@ -17,7 +17,7 @@ public class CreateCreatureDto {
     private String race;
 
     @NotNull
-    @JsonProperty("class")
+    @JsonProperty("characterClass")
     private CharacterClass characterClass;
 
     @URL @Size(max = 512)

@@ -1,10 +1,10 @@
 package com.tolkien.pets.controller;
 
-import com.tolkien.pets.model.Creature;
+import com.tolkien.pets.dto.creature.CreatureDto;
 import com.tolkien.pets.model.User;
-import com.tolkien.pets.repo.CreatureRepo;
-import com.tolkien.pets.repo.RefreshTokenRepo;
-import com.tolkien.pets.repo.UserRepo;
+import com.tolkien.pets.service.CreatureService;
+import com.tolkien.pets.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -15,40 +15,59 @@ import java.util.List;
 @RequestMapping("/api/admin")
 public class AdminController {
 
-    private final UserRepo users;
-    private final CreatureRepo creatures;
-    private final RefreshTokenRepo tokens;
+    private final UserService userService;
+    private final CreatureService creatureService;
 
-    public AdminController(UserRepo users, CreatureRepo creatures, RefreshTokenRepo tokens) {
-        this.users = users;
-        this.creatures = creatures;
-        this.tokens = tokens;
+    public AdminController(UserService userService, CreatureService creatureService) {
+        this.userService = userService;
+        this.creatureService = creatureService;
     }
 
+    // Obtener todos los usuarios
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(users.findAll());
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/creatures")
-    public ResponseEntity<List<Creature>> getAllCreatures() {
-        return ResponseEntity.ok(creatures.findAll());
-    }
-
+    // Eliminar usuario y sus criaturas
     @Transactional
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        User user = users.findById(id).orElseThrow();
-        tokens.deleteByUser(user);
-        creatures.deleteAll(creatures.findByOwnerId(id));
-        users.delete(user);
+        // Obtener criaturas del usuario (devuelve DTOs)
+        List<CreatureDto> userCreatures = creatureService.getCreaturesByOwnerId(id);
+
+        // Eliminar todas las criaturas del usuario
+        for (CreatureDto creature : userCreatures) {
+            creatureService.deleteCreature(creature.getId(), userService.getUserById(id).getEmail());
+        }
+
+        // Eliminar el usuario
+        userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    @Transactional
+    // Obtener criaturas de un usuario específico
+    @GetMapping("/users/{userId}/creatures")
+    public ResponseEntity<List<CreatureDto>> getUserCreatures(@PathVariable Long userId) {
+        try {
+            List<CreatureDto> creatures = creatureService.getCreaturesByUserId(userId);
+            return ResponseEntity.ok(creatures);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    // ✅ NUEVO: Eliminar una criatura específica (para panel admin)
     @DeleteMapping("/creatures/{id}")
-    public ResponseEntity<Void> deleteCreature(@PathVariable Long id) {
-        creatures.deleteById(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteCreatureById(@PathVariable Long id) {
+        try {
+            creatureService.deleteCreature(id, null); // el admin no necesita email del dueño
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

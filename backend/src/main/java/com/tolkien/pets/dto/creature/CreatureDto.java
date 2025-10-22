@@ -10,7 +10,7 @@ public class CreatureDto {
     private String name;
     private String race;
 
-    @JsonProperty("class")
+    @JsonProperty("characterClass")
     private CharacterClass characterClass;
 
     private int level;

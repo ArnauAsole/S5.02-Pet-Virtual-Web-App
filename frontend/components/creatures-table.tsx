@@ -172,16 +172,18 @@ export function CreaturesTable({ onTrain, onRest, onBattle }: CreaturesTableProp
                 </TableCell>
               </TableRow>
             ) : (
-              data.content.map((creature) => {
+              data.content.map((creature, index) => {
                 const imageUrl = creature.imageUrl || getCreatureImageByRace(creature.race)
+                const isPriorityImage = index < 3
                 return (
                   <TableRow key={creature.id} className="border-white/10 hover:bg-white/5">
                     <TableCell>
-                      <div className="relative h-12 w-12 rounded-full overflow-hidden">
+                      <div className="relative h-32 w-32 rounded-full overflow-hidden ring-2 ring-white/10">
                         <Image
                           src={imageUrl || "/placeholder.svg"}
                           alt={creature.name}
                           fill
+                          priority={isPriorityImage}
                           className="object-cover"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement

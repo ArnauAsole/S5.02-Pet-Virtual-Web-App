@@ -33,7 +33,7 @@ export default function AdminPage() {
     if (!auth.isAuthed() || !auth.isAdmin()) {
       router.push("/dashboard")
     }
-  }, [router])
+  }, [router, selectedUserId])
 
   const { data: users = [], isLoading: loadingUsers } = useQuery({
     queryKey: ["admin-users"],
@@ -42,7 +42,13 @@ export default function AdminPage() {
 
   const { data: userCreatures = [], isLoading: loadingUserCreatures } = useQuery({
     queryKey: ["user-creatures", selectedUserId],
-    queryFn: () => (selectedUserId ? AdminAPI.getUserCreatures(selectedUserId) : Promise.resolve([])),
+    queryFn: async () => {
+      if (!selectedUserId) {
+        return []
+      }
+      const creatures = await AdminAPI.getUserCreatures(selectedUserId)
+      return creatures
+    },
     enabled: selectedUserId !== null,
   })
 
@@ -197,7 +203,7 @@ export default function AdminPage() {
                         className="flex items-center gap-4 p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
                       >
                         {creature.imageUrl && (
-                          <div className="relative h-16 w-16 rounded-lg overflow-hidden flex-shrink-0 bg-black/40">
+                          <div className="relative h-20 w-20 rounded-lg overflow-hidden flex-shrink-0 bg-black/40">
                             <Image
                               src={creature.imageUrl || "/placeholder.svg"}
                               alt={creature.name}

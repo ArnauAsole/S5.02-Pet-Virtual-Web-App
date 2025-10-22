@@ -18,6 +18,21 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
 
+
+    @Override
+    public void deleteUser(Long id) {
+        // Primero, encuentra el usuario por ID
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        // Elimina el usuario
+        userRepo.delete(user);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepo.findAll();
+    }
+
     @Override
     public Optional<User> findByEmail(String email) {
         return userRepo.findByEmail(email);
@@ -37,6 +52,13 @@ public class UserServiceImpl implements UserService {
     public void deleteById(Long id) {
         userRepo.deleteById(id);
     }
+
+    @Override
+    public User getUserById(Long id) {
+        return userRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    }
+
 
     @Override
     public Optional<User> findById(Long id) {
