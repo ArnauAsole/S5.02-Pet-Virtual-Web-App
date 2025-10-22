@@ -25,8 +25,10 @@ import { useDebounce } from "@/hooks/use-debounce"
 import { useSoundEffect } from "@/hooks/use-sound-effect"
 import { getCreatureImageByRace } from "@/lib/utils"
 import Image from "next/image"
+import { CreatureDetailsModal } from "@/components/creature-details-modal"
+import type { Creature } from "@/lib/types"
 
-const RACES = ["Elfs", "Orcs", "Dwarfs", "Hobbits", "Men", "Maiar", "Others"]
+const RACES = ["elfs", "orcs", "dwarfs", "hobbits", "men", "maiar", "others"]
 
 interface CreaturesTableProps {
   onTrain?: (creatureId: number) => void
@@ -44,6 +46,8 @@ export function CreaturesTable({ onTrain, onRest, onBattle }: CreaturesTableProp
   const [selectedRace, setSelectedRace] = useState<string>("all")
   const [deleteId, setDeleteId] = useState<number | null>(null)
   const [queryEnabled, setQueryEnabled] = useState(false)
+  const [selectedCreature, setSelectedCreature] = useState<Creature | null>(null)
+  const [detailsOpen, setDetailsOpen] = useState(false)
 
   useEffect(() => {
     const token = auth.getToken()
@@ -105,6 +109,15 @@ export function CreaturesTable({ onTrain, onRest, onBattle }: CreaturesTableProp
     onBattle?.(id)
   }
 
+  const handleCreatureClick = (creature: Creature) => {
+    setSelectedCreature(creature)
+    setDetailsOpen(true)
+  }
+
+  const capitalizeRace = (race: string) => {
+    return race.charAt(0).toUpperCase() + race.slice(1)
+  }
+
   if (error) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -136,7 +149,7 @@ export function CreaturesTable({ onTrain, onRest, onBattle }: CreaturesTableProp
               <SelectItem value="all">Todas las razas</SelectItem>
               {RACES.map((race) => (
                 <SelectItem key={race} value={race}>
-                  {race}
+                  {capitalizeRace(race)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -177,8 +190,8 @@ export function CreaturesTable({ onTrain, onRest, onBattle }: CreaturesTableProp
                 const isPriorityImage = index < 3
                 return (
                   <TableRow key={creature.id} className="border-white/10 hover:bg-white/5">
-                    <TableCell>
-                      <div className="relative h-32 w-32 rounded-full overflow-hidden ring-2 ring-white/10">
+                    <TableCell className="cursor-pointer" onClick={() => handleCreatureClick(creature)}>
+                      <div className="relative h-32 w-32 rounded-full overflow-hidden ring-2 ring-white/10 hover:ring-primary/50 transition-all">
                         <Image
                           src={imageUrl || "/placeholder.svg"}
                           alt={creature.name}
@@ -192,8 +205,13 @@ export function CreaturesTable({ onTrain, onRest, onBattle }: CreaturesTableProp
                         />
                       </div>
                     </TableCell>
-                    <TableCell className="font-medium text-white">{creature.name}</TableCell>
-                    <TableCell className="text-gray-300">{creature.race}</TableCell>
+                    <TableCell
+                      className="font-medium text-white cursor-pointer hover:text-primary transition-colors"
+                      onClick={() => handleCreatureClick(creature)}
+                    >
+                      {creature.name}
+                    </TableCell>
+                    <TableCell className="text-gray-300">{capitalizeRace(creature.race)}</TableCell>
                     <TableCell className="text-gray-300">
                       <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 border-blue-500/30">
                         Nivel {creature.level}
@@ -299,6 +317,9 @@ export function CreaturesTable({ onTrain, onRest, onBattle }: CreaturesTableProp
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Creature Details Modal */}
+      <CreatureDetailsModal creature={selectedCreature} open={detailsOpen} onOpenChange={setDetailsOpen} />
     </div>
   )
 }

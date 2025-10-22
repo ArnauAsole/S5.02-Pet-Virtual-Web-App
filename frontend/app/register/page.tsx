@@ -13,18 +13,18 @@ import { toast } from "sonner"
 import Link from "next/link"
 import type { z } from "zod"
 import { useBackgroundMusic } from "@/hooks/use-background-music"
-import { useSoundEffect } from "@/hooks/use-sound-effect"
 import { getAllProfileImages } from "@/lib/utils"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Check } from "lucide-react"
 import { auth } from "@/lib/auth"
+import { useSoundEffect } from "@/hooks/use-sound-effect"
 
 type RegisterFormData = z.infer<typeof registerSchema>
 
 export default function RegisterPage() {
   const router = useRouter()
   useBackgroundMusic(true)
-  const playSwordClash = useSoundEffect("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Efecto%20de%20sonido%20de%20katana%20desenfundada%20-%20Sound%20Effects%20%26%20Music%20%28youtube%29-fyrDOqylrPPof3Fge4Ua0G9Ij47LwX.mp3")
+  const playSwordClash = useSoundEffect("/sounds/sword-clash.mp3")
 
   const [selectedProfileImage, setSelectedProfileImage] = useState<string>(getAllProfileImages()[0])
   const profileImages = getAllProfileImages()
@@ -39,8 +39,6 @@ export default function RegisterPage() {
   })
 
   const onSubmit = async (data: RegisterFormData) => {
-    playSwordClash()
-
     console.log("[v0] Register attempt with email:", data.email)
     console.log("[v0] Selected profile image:", selectedProfileImage)
     console.log("[v0] API URL:", process.env.NEXT_PUBLIC_API_URL)
@@ -64,6 +62,7 @@ export default function RegisterPage() {
         console.log("[v0] Token received, setting auth...")
         auth.setToken(response.token)
         console.log("[v0] Auth set successfully, redirecting to dashboard...")
+        playSwordClash()
         toast.success("Usuario creado correctamente. Redirigiendo...")
         setTimeout(() => router.push("/dashboard"), 1500)
       } else {

@@ -1,8 +1,6 @@
 "use client"
 
-import type React from "react"
-
-import { useEffect, useCallback } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { auth } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
@@ -13,114 +11,114 @@ import Link from "next/link"
 export default function HomePage() {
   const router = useRouter()
 
-  const playSwordClash = useCallback(() => {
-    const audio = new Audio("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Efecto%20de%20sonido%20de%20katana%20desenfundada%20-%20Sound%20Effects%20%26%20Music%20%28youtube%29-fyrDOqylrPPof3Fge4Ua0G9Ij47LwX.mp3")
-    audio.volume = 0.5
-    audio.play().catch((error) => {
-      console.error("Error playing sound:", error)
-    })
-  }, [])
-
   useEffect(() => {
     if (auth.isAuthed()) {
       router.push("/dashboard")
     }
   }, [router])
 
-  const handleAuthClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    playSwordClash()
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      {/* Hero Section */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-bold text-amber-900 dark:text-amber-100 mb-4">Tolkien Creatures</h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Explora y gestiona las criaturas del universo de J.R.R. Tolkien. Desde los nobles Elfos hasta los temibles
-            Orcos de la Tierra Media.
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Button asChild size="lg">
-              <Link href="/login" onClick={handleAuthClick}>
-                Iniciar Sesión
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link href="/register" onClick={handleAuthClick}>
-                Registrarse
-              </Link>
-            </Button>
-          </div>
-        </div>
-
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          <Card>
-            <CardHeader>
-              <Sparkles className="h-8 w-8 text-amber-600 dark:text-amber-400 mb-2" />
-              <CardTitle>Criaturas Únicas</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Descubre criaturas de todas las razas: Elfos, Enanos, Hobbits, Hombres y más.
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <Shield className="h-8 w-8 text-amber-600 dark:text-amber-400 mb-2" />
-              <CardTitle>Alineamientos</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>Clasifica criaturas según su alineamiento: Bueno, Malvado o Neutral.</CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <BookOpen className="h-8 w-8 text-amber-600 dark:text-amber-400 mb-2" />
-              <CardTitle>Historia Rica</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Cada criatura tiene su propia historia y habilidades únicas del lore de Tolkien.
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <Users className="h-8 w-8 text-amber-600 dark:text-amber-400 mb-2" />
-              <CardTitle>Gestión Completa</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Busca, filtra y gestiona tu colección de criaturas con herramientas avanzadas.
-              </CardDescription>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* CTA Section */}
-        <div className="mt-16 text-center">
-          <Card className="max-w-2xl mx-auto bg-amber-100 dark:bg-amber-950 border-amber-200 dark:border-amber-800">
-            <CardHeader>
-              <CardTitle className="text-2xl">¿Listo para comenzar?</CardTitle>
-              <CardDescription className="text-base">
-                Únete a la comunidad y empieza a explorar el fascinante mundo de las criaturas de Tolkien.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild size="lg" className="w-full md:w-auto">
-                <Link href="/register" onClick={handleAuthClick}>
-                  Crear Cuenta Gratis
-                </Link>
+    <div
+      className="min-h-screen"
+      style={{
+        backgroundImage: "url(/images/minas-tirith-pelennor.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      {/* Overlay for better text readability */}
+      <div className="min-h-screen bg-black/40 backdrop-blur-sm">
+        {/* Hero Section */}
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center mb-16">
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">Tolkien Creatures</h1>
+            <p className="text-xl text-gray-100 mb-8 max-w-2xl mx-auto drop-shadow-md">
+              Explora y gestiona las criaturas del universo de J.R.R. Tolkien. Desde los nobles Elfos hasta los temibles
+              Orcos de la Tierra Media.
+            </p>
+            <div className="flex gap-4 justify-center">
+              <Button asChild size="lg" className="shadow-lg">
+                <Link href="/login">Iniciar Sesión</Link>
               </Button>
-            </CardContent>
-          </Card>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="bg-white/10 border-white/30 text-white hover:bg-white/20 shadow-lg"
+              >
+                <Link href="/register">Registrarse</Link>
+              </Button>
+            </div>
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <Card className="bg-black/60 backdrop-blur-md border-white/20">
+              <CardHeader>
+                <Sparkles className="h-8 w-8 text-amber-400 mb-2" />
+                <CardTitle className="text-white">Criaturas Únicas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-gray-200">
+                  Descubre criaturas de todas las razas: Elfos, Enanos, Hobbits, Hombres y más.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-black/60 backdrop-blur-md border-white/20">
+              <CardHeader>
+                <Shield className="h-8 w-8 text-amber-400 mb-2" />
+                <CardTitle className="text-white">Alineamientos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-gray-200">
+                  Clasifica criaturas según su alineamiento: Bueno, Malvado o Neutral.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-black/60 backdrop-blur-md border-white/20">
+              <CardHeader>
+                <BookOpen className="h-8 w-8 text-amber-400 mb-2" />
+                <CardTitle className="text-white">Historia Rica</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-gray-200">
+                  Cada criatura tiene su propia historia y habilidades únicas del lore de Tolkien.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-black/60 backdrop-blur-md border-white/20">
+              <CardHeader>
+                <Users className="h-8 w-8 text-amber-400 mb-2" />
+                <CardTitle className="text-white">Gestión Completa</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-gray-200">
+                  Busca, filtra y gestiona tu colección de criaturas con herramientas avanzadas.
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* CTA Section */}
+          <div className="mt-16 text-center">
+            <Card className="max-w-2xl mx-auto bg-amber-900/80 backdrop-blur-md border-amber-700/50">
+              <CardHeader>
+                <CardTitle className="text-2xl text-white">¿Listo para comenzar?</CardTitle>
+                <CardDescription className="text-base text-gray-200">
+                  Únete a la comunidad y empieza a explorar el fascinante mundo de las criaturas de Tolkien.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button asChild size="lg" className="w-full md:w-auto shadow-lg">
+                  <Link href="/register">Crear Cuenta Gratis</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@ export default function DashboardPage() {
   const router = useRouter()
   const queryClient = useQueryClient()
   useBackgroundMusic(true)
-  const playSwordClash = useSoundEffect()
+  const playSwordClash = useSoundEffect("/sounds/sword-clash.mp3")
 
   const [authReady, setAuthReady] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
@@ -39,8 +39,9 @@ export default function DashboardPage() {
     } else {
       console.log("[v0] Token found, setting auth ready")
       setAuthReady(true)
+      playSwordClash()
     }
-  }, [router])
+  }, [router, playSwordClash])
 
   const handleLogout = () => {
     queryClient.clear()
