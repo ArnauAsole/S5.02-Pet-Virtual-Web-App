@@ -47,6 +47,8 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
+
+
     // Obtener criaturas de un usuario específico
     @GetMapping("/users/{userId}/creatures")
     public ResponseEntity<List<CreatureDto>> getUserCreatures(@PathVariable Long userId) {
@@ -60,14 +62,16 @@ public class AdminController {
     }
 
     // ✅ NUEVO: Eliminar una criatura específica (para panel admin)
+    // ✅ Eliminar criatura directamente (solo para ADMIN)
     @DeleteMapping("/creatures/{id}")
     public ResponseEntity<Void> deleteCreatureById(@PathVariable Long id) {
         try {
-            creatureService.deleteCreature(id, null); // el admin no necesita email del dueño
+            creatureService.adminDeleteCreature(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 }

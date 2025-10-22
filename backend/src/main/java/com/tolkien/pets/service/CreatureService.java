@@ -26,4 +26,7 @@ public interface CreatureService {
     CreatureDto getCreatureById(Long id, String userEmail);
 
     CreatureDto resolveCombat(Long creatureId, int damageReceived, boolean won, String userEmail);
+
+    void adminDeleteCreature(Long id);
+
 }

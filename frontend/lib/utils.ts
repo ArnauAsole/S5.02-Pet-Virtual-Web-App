@@ -81,7 +81,6 @@ export function getAllImagesForRace(race: string): string[] {
       "/images/creatures/races/dwarfs/dain_ironfoot.jpg",
     ],
     others: [
-      "/images/creatures/races/others/tarbejadil.jpg",
       "/images/creatures/races/others/rey_brujo_angmar.jpg",
       "/images/creatures/races/others/Witcher_king.png",
       "/images/creatures/races/others/tulkas.png",

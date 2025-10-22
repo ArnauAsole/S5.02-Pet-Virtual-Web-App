@@ -215,6 +215,14 @@ public class CreatureServiceImpl implements CreatureService {
     }
 
     @Override
+    public void adminDeleteCreature(Long id) {
+        Creature creature = creatureRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Criatura no encontrada"));
+        creatureRepo.delete(creature);
+    }
+
+
+    @Override
     public CreatureDto getCreatureById(Long id, String userEmail) {
         User user = userRepo.findByEmail(userEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
