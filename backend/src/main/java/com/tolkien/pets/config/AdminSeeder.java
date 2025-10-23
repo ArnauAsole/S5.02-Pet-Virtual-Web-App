@@ -18,7 +18,7 @@ public class AdminSeeder {
         return args -> userRepo.findByEmail("admin@shire.me").orElseGet(() -> {
             User u = new User();
             u.setEmail("admin@shire.me");
-            u.setPassword(pe.encode("Admin123")); // password por defecto en dev
+            u.setPassword(pe.encode("Admin123"));
             u.setRoles(Set.of(Role.ROLE_ADMIN, Role.ROLE_USER));
             System.out.println("✓ Admin user created: admin@shire.me / password: Admin123");
             return userRepo.save(u);

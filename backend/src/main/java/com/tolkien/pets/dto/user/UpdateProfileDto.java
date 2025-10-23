@@ -7,9 +7,11 @@ import org.hibernate.validator.constraints.URL;
 
 @Data
 public class UpdateProfileDto {
-    @Email @Size(max = 120)
-    private String email;            // opcional: si cambias email, se valida y se comprueba que no exista
+    @Email
+    @Size(max = 120)
+    private String email;
 
-    @URL @Size(max = 512)
-    private String profileImage;     // opcional
+    @URL
+    @Size(max = 512)
+    private String profileImage;
 }

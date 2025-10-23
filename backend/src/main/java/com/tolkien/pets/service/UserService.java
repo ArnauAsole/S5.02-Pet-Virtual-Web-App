@@ -2,6 +2,7 @@ package com.tolkien.pets.service;
 
 import com.tolkien.pets.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -19,9 +20,11 @@ public interface UserService {
     Optional<User> findById(Long id);
 
     List<User> getAllUsers();
+
     void deleteUser(Long id);
+
     User getUserById(Long id);
 
-    // 🔥 Añadido para integrarse con JwtFilter
+
     UserDetails loadUserByUsername(String username);
 }

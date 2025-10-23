@@ -19,6 +19,6 @@ public class RegisterDto {
 
     @URL
     @Size(max = 512)
-    private String profileImage; // opcional
+    private String profileImage;
 }
 

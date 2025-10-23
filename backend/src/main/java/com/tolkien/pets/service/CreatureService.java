@@ -3,6 +3,7 @@ package com.tolkien.pets.service;
 import com.tolkien.pets.dto.creature.CreateCreatureDto;
 import com.tolkien.pets.dto.creature.UpdateCreatureDto;
 import com.tolkien.pets.dto.creature.CreatureDto;
+
 import java.util.List;
 
 public interface CreatureService {

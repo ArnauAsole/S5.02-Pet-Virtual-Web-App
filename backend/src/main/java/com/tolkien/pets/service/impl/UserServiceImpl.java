@@ -21,10 +21,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
-        // Primero, encuentra el usuario por ID
+
         User user = userRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        // Elimina el usuario
+
         userRepo.delete(user);
     }
 
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepo.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
 
-        // Devolver CustomPrincipal en lugar de User de Spring Security
+
         return new CustomPrincipal(
                 user.getId(),
                 user.getEmail(),

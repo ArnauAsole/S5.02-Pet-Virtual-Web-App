@@ -9,6 +9,7 @@ public class ChangePasswordDto {
     @NotBlank
     private String currentPassword;
 
-    @NotBlank @Size(min = 6, max = 100)
+    @NotBlank
+    @Size(min = 6, max = 100)
     private String newPassword;
 }

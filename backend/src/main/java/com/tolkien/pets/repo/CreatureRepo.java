@@ -12,6 +12,5 @@ public interface CreatureRepo extends JpaRepository<Creature, Long> {
 
     List<Creature> findByOwner(User owner);
 
-    // opcional si lo usas en controladores
     List<Creature> findByOwnerId(Long ownerId);
 }

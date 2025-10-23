@@ -143,16 +143,16 @@ public class CreatureServiceImpl implements CreatureService {
             throw new RuntimeException("No tienes permisos para entrenar esta criatura");
         }
 
-        // 🔹 Gana experiencia pero pierde salud
+
         creature.setExperience(creature.getExperience() + 10);
         creature.setHealth(Math.max(0, creature.getHealth() - 10)); // pierde 10 de vida por entrenar
 
-        // 🔹 Si alcanza el nivel siguiente
+
         if (creature.getExperience() >= 100) {
             creature.setLevel(creature.getLevel() + 1);
             creature.setExperience(0);
 
-            // Subida de stats por nivel
+
             creature.setAttack(creature.getAttack() + 5);
             creature.setDefense(creature.getDefense() + 3);
             creature.setHealth(100 + (creature.getLevel() * 10)); // sube máximo de vida
@@ -174,10 +174,10 @@ public class CreatureServiceImpl implements CreatureService {
             throw new RuntimeException("No tienes permisos para esta criatura");
         }
 
-        // 🔹 Aplica daño
+
         creature.setHealth(Math.max(0, creature.getHealth() - damageReceived));
 
-        // 🔹 Si ganó el combate
+
         if (won) {
             creature.setExperience(creature.getExperience() + 30);
             if (creature.getExperience() >= 100) {
@@ -194,7 +194,6 @@ public class CreatureServiceImpl implements CreatureService {
     }
 
 
-
     @Override
     public CreatureDto restCreature(Long creatureId, String userEmail) {
         User user = userRepo.findByEmail(userEmail)
@@ -208,7 +207,7 @@ public class CreatureServiceImpl implements CreatureService {
         }
 
         int maxHealth = 100 + (creature.getLevel() * 10);
-        creature.setHealth(Math.min(maxHealth, creature.getHealth() + 30)); // recupera 30 por descanso
+        creature.setHealth(Math.min(maxHealth, creature.getHealth() + 30));
 
         Creature updated = creatureRepo.save(creature);
         return mapToDto(updated);

@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class AuthResponse {
-    private String tokenType;   // "Bearer"
-    private String token;       // JWT
-    private long   expiresIn;   // milisegundos
-    private UserSummary user;   // info básica del usuario
+    private String tokenType;
+    private String token;
+    private long expiresIn;
+    private UserSummary user;
 }

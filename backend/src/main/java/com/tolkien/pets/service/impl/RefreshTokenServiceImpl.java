@@ -24,7 +24,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         RefreshToken token = new RefreshToken();
         token.setUser(user);
         token.setToken(UUID.randomUUID().toString());
-        token.setExpiryDate(Instant.now().plusSeconds(7 * 24 * 60 * 60)); // 7 días
+        token.setExpiryDate(Instant.now().plusSeconds(7 * 24 * 60 * 60));
         return refreshTokenRepo.save(token);
     }
 

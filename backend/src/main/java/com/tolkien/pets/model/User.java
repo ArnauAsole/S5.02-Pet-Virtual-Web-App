@@ -2,6 +2,7 @@ package com.tolkien.pets.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,9 +38,6 @@ public class User {
     @JsonIgnore
     private List<RefreshToken> refreshTokens;
 
-    // =====================
-    // Getters and Setters
-    // =====================
 
     public Long getId() {
         return id;

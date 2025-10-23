@@ -22,7 +22,6 @@ public class CreatureController {
         this.creatureService = creatureService;
     }
 
-    // ✅ Obtener todas las criaturas del usuario autenticado
     @GetMapping
     public ResponseEntity<List<CreatureDto>> getUserCreatures(
             @AuthenticationPrincipal CustomPrincipal principal
@@ -31,7 +30,6 @@ public class CreatureController {
         return ResponseEntity.ok(creatures);
     }
 
-    // ✅ Obtener una criatura por ID (nuevo endpoint necesario)
     @GetMapping("/{id}")
     public ResponseEntity<CreatureDto> getCreatureById(
             @PathVariable Long id,
@@ -53,7 +51,6 @@ public class CreatureController {
     }
 
 
-    // Crear nueva criatura
     @PostMapping
     public ResponseEntity<CreatureDto> createCreature(
             @RequestBody CreateCreatureDto dto,
@@ -63,7 +60,7 @@ public class CreatureController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    // Actualizar criatura existente
+
     @PutMapping("/{id}")
     public ResponseEntity<CreatureDto> updateCreature(
             @PathVariable Long id,
@@ -74,7 +71,6 @@ public class CreatureController {
         return ResponseEntity.ok(updated);
     }
 
-    // Eliminar criatura
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCreature(
             @PathVariable Long id,
@@ -84,7 +80,7 @@ public class CreatureController {
         return ResponseEntity.noContent().build();
     }
 
-    // Entrenar criatura
+
     @PostMapping("/{id}/train")
     public ResponseEntity<CreatureDto> trainCreature(
             @PathVariable Long id,
@@ -94,7 +90,7 @@ public class CreatureController {
         return ResponseEntity.ok(trained);
     }
 
-    // Restablecer criatura
+
     @PostMapping("/{id}/rest")
     public ResponseEntity<CreatureDto> restCreature(
             @PathVariable Long id,

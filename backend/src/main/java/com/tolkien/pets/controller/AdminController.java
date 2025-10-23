@@ -23,33 +23,31 @@ public class AdminController {
         this.creatureService = creatureService;
     }
 
-    // Obtener todos los usuarios
+
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
-    // Eliminar usuario y sus criaturas
+
     @Transactional
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        // Obtener criaturas del usuario (devuelve DTOs)
+
         List<CreatureDto> userCreatures = creatureService.getCreaturesByOwnerId(id);
 
-        // Eliminar todas las criaturas del usuario
+
         for (CreatureDto creature : userCreatures) {
             creatureService.deleteCreature(creature.getId(), userService.getUserById(id).getEmail());
         }
 
-        // Eliminar el usuario
+
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
 
-
-    // Obtener criaturas de un usuario específico
     @GetMapping("/users/{userId}/creatures")
     public ResponseEntity<List<CreatureDto>> getUserCreatures(@PathVariable Long userId) {
         try {
@@ -61,8 +59,7 @@ public class AdminController {
         }
     }
 
-    // ✅ NUEVO: Eliminar una criatura específica (para panel admin)
-    // ✅ Eliminar criatura directamente (solo para ADMIN)
+
     @DeleteMapping("/creatures/{id}")
     public ResponseEntity<Void> deleteCreatureById(@PathVariable Long id) {
         try {
