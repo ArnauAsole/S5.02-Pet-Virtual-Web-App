@@ -318,7 +318,147 @@ backend/
  ├── service/
  └── security/
  ```
-💬 Learning Reflection
+
+## 🧭 Level 2 Achieved — Logging & Caching Implementation
+
+### 🪵 Advanced Logging System
+
+An advanced logging system has been implemented using SLF4J + Logback, integrated into the Spring Boot framework.
+
+Logs are categorized by severity level:
+
+Level	Purpose
+INFO	General application flow and user actions (login, CRUD operations, etc.)
+DEBUG	Detailed internal state, useful for developers (cache hits, training results, etc.)
+WARN	Potential issues that don’t stop execution (invalid data, missing optional fields)
+ERROR	Exceptions and unexpected failures (database access, authentication errors)
+
+This allows developers and administrators to trace the lifecycle of every request, simplify debugging, and maintain observability in both development and production environments.
+
+Example log output:
+```
+[INFO ] c.t.p.controller.CreatureController - Fetching all creatures for user admin@shire.me
+[DEBUG] c.t.p.controller.CreatureController - User admin@shire.me has 6 creatures
+```
+
+### ⚡ Spring Boot Caching System
+
+A memory caching system has been integrated using Spring Cache with annotations like:
+
+@Cacheable → stores frequently accessed data (e.g., creature lists per user)
+
+@CacheEvict → automatically clears outdated entries when data changes (e.g., create, train, or delete a creature)
+
+This feature significantly improves performance by reducing redundant database queries.
+
+Behavior verified through application logs:
+
+🟢 First request → SQL query executed (from DB)
+
+🟡 Subsequent identical requests → served from cache (no SQL logs)
+
+🔴 After data changes → cache automatically refreshed
+
+Example evidence:
+```
+INFO  CreatureServiceImpl - Fetching creatures for userId=2 (from DB)
+Hibernate: select ... from creatures ...
+... (after caching enabled)
+(no new SQL queries, served from cache)
+```
+
+🚀 Result
+
+✅ Level 2 criteria fully met:
+
+Logging system configured and categorized by severity
+
+Cache layer implemented and tested successfully
+
+Verified performance improvement and correct cache invalidation
+
+These enhancements make the Tolkien Creatures API more efficient, maintainable, and production-ready.
+
+
+## 🧪 Level 3 — Integration Tests
+
+To achieve Level 3, a full integration test suite was implemented to verify that all components of the API work together correctly — including the REST controllers, service layer, repositories, and the security system (JWT + roles).
+
+### ⚙️ Test Environment
+
+Integration tests are executed using the Spring Boot Test framework with an H2 in-memory database and the profile test (application-test.yml):
+
+```
+spring:
+datasource:
+url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+driver-class-name: org.h2.Driver
+username: sa
+password:
+jpa:
+hibernate:
+ddl-auto: create-drop
+show-sql: true
+jwt:
+secret: test_secret_para_pruebas_123456789
+expiration: 3600000
+```
+
+This setup allows the entire backend to run in isolation — using the same configuration structure as production, but without connecting to an external MySQL database.
+
+
+### 🧩 Tools & Libraries
+
+Spring Boot Starter Test (JUnit + MockMvc)
+
+H2 Database for lightweight persistence
+
+MockMvc for simulating authenticated REST API requests
+
+@SpringBootTest and @AutoConfigureMockMvc for full context loading
+
+Maven Surefire Plugin to automate test execution
+
+### ✅ Integration Tests Implemented
+
+Test Class	Purpose	Key Scenarios Covered
+AuthIntegrationTest	Validates the authentication flow and JWT behavior	- User registration
+```
+- Login success and failure cases
+- Token validation and structure
+  CreatureIntegrationTest	Ensures creatures’ CRUD and gameplay logic work correctly	- Create, update, and delete creatures
+- Training and resting (level/health logic)
+- Combat result resolution
+  AdminIntegrationTest	Verifies administrator operations with secured access	- List and delete users
+- List and delete creatures belonging to other users
+- Ensures endpoints require ROLE_ADMIN
+```
+
+  🧾 Example Execution
+-------------------------------------------------------
+T E S T S
+-------------------------------------------------------
+Running com.tolkien.pets.AuthIntegrationTest
+Running com.tolkien.pets.CreatureIntegrationTest
+Running com.tolkien.pets.AdminIntegrationTest
+Tests run: 13, Failures: 0, Errors: 0, Skipped: 0
+-------------------------------------------------------
+BUILD SUCCESS
+
+### 🧠 Outcome
+
+These integration tests confirm that:
+
+The security configuration (JWT + role-based access) is enforced correctly.
+
+The persistence layer (JPA + H2) interacts correctly with services and controllers.
+
+The business rules (combat, training, rest, level-up logic) are consistent.
+
+✅ With this, the project fulfills Level 3 requirements, demonstrating reliable integration across all backend layers.
+
+
+## 💬 Learning Reflection
 
 ```
 During development, generative AI (ChatGPT + V0 App by Vercel) was used to:
@@ -343,7 +483,7 @@ Build a scalable and secure web application from scratch.
 👨‍💻 Author
 
 ```
-Arnau Asole
+Arnau Solé Núñez
 ```
 
 🔗 GitHub Repository
