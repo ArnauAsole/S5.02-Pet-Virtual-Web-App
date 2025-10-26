@@ -43,7 +43,7 @@ class AuthIntegrationTest {
 
     @BeforeEach
     void setup() {
-        // Creamos un usuario de prueba directamente en la BD
+
         User user = new User();
         user.setEmail("frodo@shire.me");
         user.setPassword(passwordEncoder.encode("ringbearer"));

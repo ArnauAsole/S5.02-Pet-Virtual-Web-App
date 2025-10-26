@@ -19,7 +19,7 @@ spring:
 
 jwt:
   secret: test_secret_para_pruebas_123456789
-  expiration: 3600000 # 1 hora
+  expiration: 3600000
 
 logging:
   level:

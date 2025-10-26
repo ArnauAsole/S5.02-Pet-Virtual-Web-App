@@ -23,4 +23,4 @@ spring:
 
 jwt:
   secret: mi_clave_super_secreta_para_firmar_tokens_123456789
-  expiration: 86400000  # 1 día (en milisegundos)
+  expiration: 86400000

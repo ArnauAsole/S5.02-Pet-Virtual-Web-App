@@ -55,7 +55,7 @@ class AdminIntegrationTest {
 
     @BeforeEach
     void setup() throws Exception {
-        // Crear usuario normal
+
         User user = new User();
         user.setEmail("pippin@shire.me");
         user.setPassword(passwordEncoder.encode("secondBreakfast"));
@@ -63,26 +63,26 @@ class AdminIntegrationTest {
         userRepo.save(user);
         userId = user.getId();
 
-        // Crear admin
+
         User admin = new User();
         admin.setEmail("admin@gondor.me");
         admin.setPassword(passwordEncoder.encode("anduril"));
         admin.setRoles(Set.of(Role.ROLE_ADMIN));
         userRepo.save(admin);
 
-        // Tokens
+
         userToken = "Bearer " + jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRoles());
         adminToken = "Bearer " + jwtUtil.generateToken(admin.getId(), admin.getEmail(), admin.getRoles());
 
-        // Crear criatura asociada al usuario normal
+
         String json = """
-            {
-              "name": "Treebeard",
-              "race": "Ent",
-              "characterClass": "CABALLERO",
-              "imageUrl": "http://example.com/ent.jpg"
-            }
-            """;
+                {
+                  "name": "Treebeard",
+                  "race": "Ent",
+                  "characterClass": "CABALLERO",
+                  "imageUrl": "http://example.com/ent.jpg"
+                }
+                """;
 
         String response = mockMvc.perform(post("/api/creatures")
                         .contentType(MediaType.APPLICATION_JSON)

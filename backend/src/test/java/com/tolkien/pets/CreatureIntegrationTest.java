@@ -54,7 +54,7 @@ class CreatureIntegrationTest {
 
     @BeforeEach
     void setup() {
-        // Creamos un usuario de prueba
+
         User user = new User();
         user.setEmail("sam@shire.me");
         user.setPassword(passwordEncoder.encode("secondBreakfast"));
@@ -62,7 +62,7 @@ class CreatureIntegrationTest {
         userRepo.save(user);
         userId = user.getId();
 
-        // Generamos token JWT válido
+
         jwtToken = "Bearer " + jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRoles());
     }
 
@@ -70,13 +70,13 @@ class CreatureIntegrationTest {
     @DisplayName("✅ Create creature successfully")
     void testCreateCreature() throws Exception {
         String json = """
-            {
-              "name": "Shadowfax",
-              "race": "Horse",
-              "characterClass": "CABALLERO",
-              "imageUrl": "http://example.com/horse.jpg"
-            }
-            """;
+                {
+                  "name": "Shadowfax",
+                  "race": "Horse",
+                  "characterClass": "CABALLERO",
+                  "imageUrl": "http://example.com/horse.jpg"
+                }
+                """;
 
         mockMvc.perform(post("/api/creatures")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -94,15 +94,15 @@ class CreatureIntegrationTest {
     @Test
     @DisplayName("✅ Train and rest creature updates stats correctly")
     void testTrainAndRestCreature() throws Exception {
-        // Primero creamos una criatura
+
         String json = """
-            {
-              "name": "Bill",
-              "race": "Pony",
-              "characterClass": "CABALLERO",
-              "imageUrl": "http://example.com/bill.jpg"
-            }
-            """;
+                {
+                  "name": "Bill",
+                  "race": "Pony",
+                  "characterClass": "CABALLERO",
+                  "imageUrl": "http://example.com/bill.jpg"
+                }
+                """;
 
         String createResponse = mockMvc.perform(post("/api/creatures")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -115,17 +115,17 @@ class CreatureIntegrationTest {
 
         Long creatureId = objectMapper.readTree(createResponse).get("id").asLong();
 
-        // Entrenamos la criatura
+
         mockMvc.perform(post("/api/creatures/" + creatureId + "/train")
                         .header("Authorization", jwtToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.experience").value(10));
 
-        // Descansamos la criatura
+
         mockMvc.perform(post("/api/creatures/" + creatureId + "/rest")
                         .header("Authorization", jwtToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.health").value(110)); // vuelve al máximo
+                .andExpect(jsonPath("$.health").value(110));
     }
 
     @Test
@@ -133,13 +133,13 @@ class CreatureIntegrationTest {
     void testGetAndDeleteCreature() throws Exception {
         // Crear criatura
         String json = """
-            {
-              "name": "Gwaihir",
-              "race": "Eagle",
-              "characterClass": "CABALLERO",
-              "imageUrl": "http://example.com/eagle.jpg"
-            }
-            """;
+                {
+                  "name": "Gwaihir",
+                  "race": "Eagle",
+                  "characterClass": "CABALLERO",
+                  "imageUrl": "http://example.com/eagle.jpg"
+                }
+                """;
 
         String response = mockMvc.perform(post("/api/creatures")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -152,14 +152,14 @@ class CreatureIntegrationTest {
 
         Long creatureId = objectMapper.readTree(response).get("id").asLong();
 
-        // Consultar criatura
+
         mockMvc.perform(get("/api/creatures/" + creatureId)
                         .header("Authorization", jwtToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Gwaihir"))
                 .andExpect(jsonPath("$.level").value(1));
 
-        // Eliminar criatura
+
         mockMvc.perform(delete("/api/creatures/" + creatureId)
                         .header("Authorization", jwtToken))
                 .andExpect(status().isNoContent());
@@ -171,6 +171,6 @@ class CreatureIntegrationTest {
     @DisplayName("❌ Unauthorized when missing JWT token")
     void testUnauthorizedWithoutToken() throws Exception {
         mockMvc.perform(get("/api/creatures"))
-                .andExpect(status().isForbidden()); // el filtro de seguridad bloquea el acceso
+                .andExpect(status().isForbidden());
     }
 }

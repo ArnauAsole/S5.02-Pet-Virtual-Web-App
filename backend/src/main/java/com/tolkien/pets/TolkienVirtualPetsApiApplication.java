@@ -2,10 +2,10 @@ package com.tolkien.pets;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching; // ✅ Import necesario
+import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
-@EnableCaching  // 🔥 Activa el sistema de memoria caché en toda la aplicación
+@EnableCaching
 public class TolkienVirtualPetsApiApplication {
 
     public static void main(String[] args) {

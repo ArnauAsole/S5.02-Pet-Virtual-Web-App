@@ -24,7 +24,7 @@ logging:
     root: INFO
     org.springframework.web: INFO
     org.hibernate.SQL: WARN
-    com.tolkien.pets: DEBUG   # 🔹 Muestra logs detallados solo de tu app
+    com.tolkien.pets: DEBUG
   pattern:
     console: "%d{HH:mm:ss} [%highlight(%-5level)] %cyan(%logger{36}) - %msg%n"
   file:

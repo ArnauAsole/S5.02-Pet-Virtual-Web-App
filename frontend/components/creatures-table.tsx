@@ -273,20 +273,18 @@ export function CreaturesTable({ onTrain, onRest, onBattle }: CreaturesTableProp
                             <Swords className="h-4 w-4" />
                           </Button>
                         )}
-                        {isAdmin && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => {
-                              playSwordClash()
-                              setDeleteId(creature.id)
-                            }}
-                            title="Eliminar"
-                            className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        )}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            playSwordClash()
+                            setDeleteId(creature.id)
+                          }}
+                          title="Eliminar"
+                          className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
