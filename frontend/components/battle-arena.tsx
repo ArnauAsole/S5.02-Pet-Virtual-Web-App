@@ -319,8 +319,8 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
 
         {(battle.phase === "battle" || battle.phase === "result") && battle.playerCreature && battle.enemyCreature && (
           <div className="space-y-4 py-4">
-            <div className="relative w-full h-48 rounded-lg overflow-hidden mb-4">
-              <img src="/images/battle-vs.jpg" alt="Battle Arena" className="w-full h-full object-cover" />
+            <div className="relative w-full h-64 rounded-lg overflow-hidden mb-4">
+              <img src="/images/battle-vs.jpg" alt="Battle Arena" className="w-full h-full object-contain" />
               <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-6xl font-bold text-white drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]">VS</div>
@@ -334,11 +334,13 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
                 }`}
               >
                 <div className="flex flex-col items-center gap-4">
-                  <img
-                    src={battle.playerCreature.imageUrl || "/placeholder.svg"}
-                    alt={battle.playerCreature.name}
-                    className="h-40 w-40 rounded-lg object-cover border-2 border-blue-500 shadow-md"
-                  />
+                  <div className="relative h-48 w-48 rounded-lg overflow-hidden border-2 border-blue-500 shadow-md bg-muted/20">
+                    <img
+                      src={battle.playerCreature.imageUrl || "/placeholder.svg"}
+                      alt={battle.playerCreature.name}
+                      className="w-full h-full object-contain p-2"
+                    />
+                  </div>
                   <div className="w-full space-y-3">
                     <div className="flex items-center justify-between">
                       <h3 className="font-semibold text-lg">{battle.playerCreature.name}</h3>
@@ -372,11 +374,13 @@ export function BattleArena({ open, onOpenChange, preselectedCreatureId }: Battl
                 }`}
               >
                 <div className="flex flex-col items-center gap-4">
-                  <img
-                    src={battle.enemyCreature.imageUrl || "/placeholder.svg"}
-                    alt={battle.enemyCreature.name}
-                    className="h-40 w-40 rounded-lg object-cover border-2 border-red-500 shadow-md"
-                  />
+                  <div className="relative h-48 w-48 rounded-lg overflow-hidden border-2 border-red-500 shadow-md bg-muted/20">
+                    <img
+                      src={battle.enemyCreature.imageUrl || "/placeholder.svg"}
+                      alt={battle.enemyCreature.name}
+                      className="w-full h-full object-contain p-2"
+                    />
+                  </div>
                   <div className="w-full space-y-3">
                     <div className="flex items-center justify-between">
                       <h3 className="font-semibold text-lg">{battle.enemyCreature.name}</h3>

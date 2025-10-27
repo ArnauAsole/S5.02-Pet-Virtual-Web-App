@@ -60,7 +60,7 @@ export default function RegisterPage() {
 
       if (response.token) {
         console.log("[v0] Token received, setting auth...")
-        auth.setToken(response.token)
+        auth.setToken(response)
         console.log("[v0] Auth set successfully, redirecting to dashboard...")
         playSwordClash()
         toast.success("Usuario creado correctamente. Redirigiendo...")

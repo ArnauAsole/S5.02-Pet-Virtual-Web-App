@@ -1,22 +1,10 @@
 "use client"
-
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { auth } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Sparkles, Shield, BookOpen, Users } from "lucide-react"
 import Link from "next/link"
 
 export default function HomePage() {
-  const router = useRouter()
-
-  useEffect(() => {
-    if (auth.isAuthed()) {
-      router.push("/dashboard")
-    }
-  }, [router])
-
   return (
     <div
       className="min-h-screen"

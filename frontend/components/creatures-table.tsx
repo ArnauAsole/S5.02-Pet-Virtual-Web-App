@@ -191,13 +191,13 @@ export function CreaturesTable({ onTrain, onRest, onBattle }: CreaturesTableProp
                 return (
                   <TableRow key={creature.id} className="border-white/10 hover:bg-white/5">
                     <TableCell className="cursor-pointer" onClick={() => handleCreatureClick(creature)}>
-                      <div className="relative h-32 w-32 rounded-full overflow-hidden ring-2 ring-white/10 hover:ring-primary/50 transition-all">
+                      <div className="relative h-40 w-40 rounded-full overflow-hidden ring-2 ring-white/10 hover:ring-primary/50 transition-all bg-muted/20">
                         <Image
                           src={imageUrl || "/placeholder.svg"}
                           alt={creature.name}
                           fill
                           priority={isPriorityImage}
-                          className="object-cover"
+                          className="object-contain p-1"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement
                             target.src = "/mystical-griffon.png"

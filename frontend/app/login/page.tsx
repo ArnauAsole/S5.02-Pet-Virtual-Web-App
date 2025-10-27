@@ -30,12 +30,6 @@ export default function LoginPage() {
     },
   })
 
-  // useEffect(() => {
-  //   if (auth.isAuthed()) {
-  //     router.push("/dashboard")
-  //   }
-  // }, [router])
-
   const onSubmit = async (data: LoginFormData) => {
     console.log("[v0] ===== LOGIN FORM SUBMITTED =====")
     console.log("[v0] Form data:", data)
@@ -57,7 +51,7 @@ export default function LoginPage() {
       }
 
       console.log("[v0] Token received, setting auth...")
-      auth.setToken(token)
+      auth.setToken(response)
 
       playSwordClash()
       toast.success("Sesión iniciada correctamente")

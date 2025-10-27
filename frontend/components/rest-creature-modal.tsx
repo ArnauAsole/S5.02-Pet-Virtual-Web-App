@@ -93,24 +93,24 @@ export function RestCreatureModal({ open, onOpenChange, creatureId }: RestCreatu
 
         <div className="space-y-4 py-4">
           {resting && (
-            <div className="relative w-full h-32 rounded-lg overflow-hidden mb-4">
+            <div className="relative w-full h-64 rounded-lg overflow-hidden mb-4">
               <Image
                 src="/fantasy-campfire-at-night-with-warm-orange-glow.jpg"
                 alt="Campamento de descanso"
                 fill
-                className="object-cover"
+                className="object-contain"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
             </div>
           )}
 
           <div className="flex items-center gap-3">
-            <div className="relative h-16 w-16 rounded-full overflow-hidden bg-primary/10">
+            <div className="relative h-20 w-20 rounded-full overflow-hidden bg-primary/10">
               <Image
                 src={imageUrl || "/placeholder.svg"}
                 alt={creature.name}
                 fill
-                className="object-cover"
+                className="object-contain p-1"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement
                   target.src = "/mystical-griffon.png"

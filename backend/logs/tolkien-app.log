@@ -1,51 +1,317 @@
-2025-10-26T12:33:54.738+01:00  WARN 29796 --- [tolkien-virtual-pets-api] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=21h25m46s833ms629µs600ns).
-2025-10-26T12:38:41.770+01:00  WARN 29796 --- [tolkien-virtual-pets-api] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m16s976ms308µs400ns).
-2025-10-26T14:40:01.689+01:00  WARN 29796 --- [tolkien-virtual-pets-api] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=31m50s14ms420µs900ns).
-2025-10-26T15:57:40.185+01:00  INFO 29796 --- [tolkien-virtual-pets-api] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-10-26T15:57:40.195+01:00  INFO 29796 --- [tolkien-virtual-pets-api] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-10-26T15:57:40.199+01:00  INFO 29796 --- [tolkien-virtual-pets-api] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-10-26T15:58:28.819+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] c.t.p.TolkienVirtualPetsApiApplication   : Starting TolkienVirtualPetsApiApplication using Java 21.0.8 with PID 35312 (C:\dev\PetRepo\tolkien-virtual-pets-api\tolkien-virtual-pets-api\backend\target\classes started by solen in C:\dev\PetRepo\tolkien-virtual-pets-api\tolkien-virtual-pets-api\backend)
-2025-10-26T15:58:28.820+01:00 DEBUG 35312 --- [tolkien-virtual-pets-api] [main] c.t.p.TolkienVirtualPetsApiApplication   : Running with Spring Boot v3.3.4, Spring v6.1.13
-2025-10-26T15:58:28.821+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] c.t.p.TolkienVirtualPetsApiApplication   : The following 1 profile is active: "dev"
-2025-10-26T15:58:29.396+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-10-26T15:58:29.443+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 40 ms. Found 3 JPA repository interfaces.
-2025-10-26T15:58:29.806+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-10-26T15:58:29.818+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-10-26T15:58:29.819+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
-2025-10-26T15:58:29.875+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-10-26T15:58:29.875+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1023 ms
-2025-10-26T15:58:29.966+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-10-26T15:58:30.013+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2025-10-26T15:58:30.039+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-10-26T15:58:30.251+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-10-26T15:58:30.272+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-10-26T15:58:30.386+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@45424c0
-2025-10-26T15:58:30.387+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-10-26T15:58:30.452+01:00  WARN 35312 --- [tolkien-virtual-pets-api] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-10-26T15:58:31.117+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-10-26T15:58:31.199+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-10-26T15:58:31.421+01:00 DEBUG 35312 --- [tolkien-virtual-pets-api] [main] com.tolkien.pets.security.JwtFilter      : Filter 'jwtFilter' configured for use
-2025-10-26T15:58:31.939+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-10-26T15:58:31.945+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [main] c.t.p.TolkienVirtualPetsApiApplication   : Started TolkienVirtualPetsApiApplication in 3.478 seconds (process running for 3.724)
-2025-10-26T16:00:34.107+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-10-26T16:00:34.111+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-10-26T16:00:34.125+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 6 ms
-2025-10-26T16:00:34.789+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.AuthController       : Login attempt email=leo@messi.cat
-2025-10-26T16:00:35.023+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.AuthController       : Login success email=leo@messi.cat
-2025-10-26T16:00:39.371+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : Fetching all creatures for user leo@messi.cat
-2025-10-26T16:00:39.385+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=13 (from DB)
-2025-10-26T16:00:39.427+01:00 DEBUG 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : User leo@messi.cat has 2 creatures
-2025-10-26T16:01:17.244+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : User leo@messi.cat creating new creature 'Glaurung'
-2025-10-26T16:01:17.247+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.p.service.impl.CreatureServiceImpl   : 🪄 Creating creature for user: leo@messi.cat
-2025-10-26T16:01:17.406+01:00 DEBUG 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 'Glaurung' created with ID 33
-2025-10-26T16:01:17.419+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : Creature created successfully id=33 for user leo@messi.cat
-2025-10-26T16:01:17.449+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : Fetching all creatures for user leo@messi.cat
-2025-10-26T16:01:17.451+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=13 (from DB)
-2025-10-26T16:01:17.461+01:00 DEBUG 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : User leo@messi.cat has 3 creatures
-2025-10-26T16:01:23.165+01:00  WARN 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.CreatureController   : User leo@messi.cat deleting creature id=29
-2025-10-26T16:01:23.168+01:00  WARN 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.p.service.impl.CreatureServiceImpl   : 🗑️ Deleting creature 29 by user leo@messi.cat
-2025-10-26T16:01:23.217+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 29 deleted successfully.
-2025-10-26T16:01:23.260+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.CreatureController   : Creature deleted successfully id=29 by user leo@messi.cat
-2025-10-26T16:01:23.317+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : Fetching all creatures for user leo@messi.cat
-2025-10-26T16:01:23.319+01:00  INFO 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=13 (from DB)
-2025-10-26T16:01:23.330+01:00 DEBUG 35312 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : User leo@messi.cat has 2 creatures
+2025-10-27T14:48:13.125+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] c.t.p.TolkienVirtualPetsApiApplication   : Starting TolkienVirtualPetsApiApplication using Java 21.0.8 with PID 22408 (C:\dev\PetRepo\tolkien-virtual-pets-api\tolkien-virtual-pets-api\backend\target\classes started by solen in C:\dev\PetRepo\tolkien-virtual-pets-api\tolkien-virtual-pets-api\backend)
+2025-10-27T14:48:13.129+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [main] c.t.p.TolkienVirtualPetsApiApplication   : Running with Spring Boot v3.3.4, Spring v6.1.13
+2025-10-27T14:48:13.129+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] c.t.p.TolkienVirtualPetsApiApplication   : The following 1 profile is active: "dev"
+2025-10-27T14:48:14.116+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-27T14:48:14.179+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 53 ms. Found 3 JPA repository interfaces.
+2025-10-27T14:48:14.831+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-10-27T14:48:14.855+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-10-27T14:48:14.855+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2025-10-27T14:48:14.920+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-10-27T14:48:14.920+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1715 ms
+2025-10-27T14:48:15.028+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-27T14:48:15.082+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2025-10-27T14:48:15.113+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-10-27T14:48:15.381+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-10-27T14:48:15.412+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-10-27T14:48:15.567+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@30c8c6ab
+2025-10-27T14:48:15.573+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-10-27T14:48:15.637+01:00  WARN 22408 --- [tolkien-virtual-pets-api] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-10-27T14:48:16.422+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-10-27T14:48:16.514+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-27T14:48:16.860+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [main] com.tolkien.pets.security.JwtFilter      : Filter 'jwtFilter' configured for use
+2025-10-27T14:48:17.909+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-10-27T14:48:17.925+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [main] c.t.p.TolkienVirtualPetsApiApplication   : Started TolkienVirtualPetsApiApplication in 5.515 seconds (process running for 5.887)
+2025-10-27T14:49:07.356+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-10-27T14:49:07.357+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-10-27T14:49:07.357+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-10-27T14:49:07.464+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.CreatureController   : Fetching all creatures for user leo@messi.cat
+2025-10-27T14:49:07.470+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=13 (from DB)
+2025-10-27T14:49:07.498+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.CreatureController   : User leo@messi.cat has 2 creatures
+2025-10-27T14:49:17.869+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : Fetching all creatures for user leo@messi.cat
+2025-10-27T14:49:17.871+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : User leo@messi.cat has 2 creatures
+2025-10-27T14:49:25.109+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : Fetching all creatures for user leo@messi.cat
+2025-10-27T14:49:25.112+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : User leo@messi.cat has 2 creatures
+2025-10-27T14:50:32.334+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.pets.controller.AuthController       : Login attempt email=admin@shire.me
+2025-10-27T14:50:32.505+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.pets.controller.AuthController       : Login success email=admin@shire.me
+2025-10-27T14:50:32.863+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T14:50:32.865+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T14:50:32.880+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T14:50:54.559+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=4
+2025-10-27T14:50:54.559+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.p.service.impl.CreatureServiceImpl   : 🔍 Fetching creature by ID 4 (from DB)
+2025-10-27T14:50:54.577+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=4, owner=admin@shire.me
+2025-10-27T14:50:57.850+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : User admin@shire.me training creature id=4
+2025-10-27T14:50:57.850+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.p.service.impl.CreatureServiceImpl   : 🏋️ Training creature 4 by user admin@shire.me
+2025-10-27T14:50:57.885+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 4 trained. New level: 4
+2025-10-27T14:50:57.967+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : Creature trained id=4, level=4, XP=50
+2025-10-27T14:50:58.019+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=4
+2025-10-27T14:50:58.021+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=4, owner=admin@shire.me
+2025-10-27T14:50:58.025+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T14:50:58.029+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T14:50:58.052+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T14:51:04.057+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : User admin@shire.me resting creature id=4
+2025-10-27T14:51:04.057+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.p.service.impl.CreatureServiceImpl   : 😴 Resting creature 4 by user admin@shire.me
+2025-10-27T14:51:04.077+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 4 rested. Current health: 77
+2025-10-27T14:51:04.097+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : Creature rested id=4, newHealth=77
+2025-10-27T14:51:04.137+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=4
+2025-10-27T14:51:04.137+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=4, owner=admin@shire.me
+2025-10-27T14:51:04.137+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T14:51:04.143+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T14:51:04.157+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T14:51:09.032+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : User admin@shire.me resting creature id=4
+2025-10-27T14:51:09.035+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.p.service.impl.CreatureServiceImpl   : 😴 Resting creature 4 by user admin@shire.me
+2025-10-27T14:51:09.064+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 4 rested. Current health: 107
+2025-10-27T14:51:09.092+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : Creature rested id=4, newHealth=107
+2025-10-27T14:51:09.119+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T14:51:09.119+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=4
+2025-10-27T14:51:09.119+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=4, owner=admin@shire.me
+2025-10-27T14:51:09.121+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T14:51:09.133+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T14:51:11.410+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T14:51:11.410+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T14:51:16.722+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : User admin@shire.me training creature id=4
+2025-10-27T14:51:16.724+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.p.service.impl.CreatureServiceImpl   : 🏋️ Training creature 4 by user admin@shire.me
+2025-10-27T14:51:16.743+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 4 trained. New level: 4
+2025-10-27T14:51:16.767+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : Creature trained id=4, level=4, XP=60
+2025-10-27T14:51:16.815+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T14:51:16.815+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=4
+2025-10-27T14:51:16.817+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=4, owner=admin@shire.me
+2025-10-27T14:51:16.818+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T14:51:16.827+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T14:57:06.615+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T14:57:06.616+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T14:59:29.114+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.AuthController       : Registration requested for email=antoni@156.cat
+2025-10-27T14:59:29.288+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.AuthController       : User registered successfully email=antoni@156.cat
+2025-10-27T14:59:39.109+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : Fetching all creatures for user antoni@156.cat
+2025-10-27T14:59:39.112+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=15 (from DB)
+2025-10-27T14:59:39.119+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : User antoni@156.cat has 0 creatures
+2025-10-27T15:00:44.996+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : User antoni@156.cat creating new creature 'toni'
+2025-10-27T15:00:44.999+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : 🪄 Creating creature for user: antoni@156.cat
+2025-10-27T15:00:45.022+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 'toni' created with ID 34
+2025-10-27T15:00:45.040+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : Creature created successfully id=34 for user antoni@156.cat
+2025-10-27T15:00:45.071+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.CreatureController   : Fetching all creatures for user antoni@156.cat
+2025-10-27T15:00:45.072+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=15 (from DB)
+2025-10-27T15:00:45.084+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.CreatureController   : User antoni@156.cat has 1 creatures
+2025-10-27T15:01:07.092+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : User antoni@156.cat requesting creature details id=34
+2025-10-27T15:01:07.092+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.p.service.impl.CreatureServiceImpl   : 🔍 Fetching creature by ID 34 (from DB)
+2025-10-27T15:01:07.108+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=34, owner=antoni@156.cat
+2025-10-27T15:01:10.068+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.CreatureController   : User antoni@156.cat resting creature id=34
+2025-10-27T15:01:10.068+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.p.service.impl.CreatureServiceImpl   : 😴 Resting creature 34 by user antoni@156.cat
+2025-10-27T15:01:10.082+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 34 rested. Current health: 110
+2025-10-27T15:01:10.108+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.CreatureController   : Creature rested id=34, newHealth=110
+2025-10-27T15:01:10.152+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : User antoni@156.cat requesting creature details id=34
+2025-10-27T15:01:10.157+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=34, owner=antoni@156.cat
+2025-10-27T15:01:10.157+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : Fetching all creatures for user antoni@156.cat
+2025-10-27T15:01:10.158+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=15 (from DB)
+2025-10-27T15:01:10.172+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : User antoni@156.cat has 1 creatures
+2025-10-27T15:01:15.398+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : User antoni@156.cat resting creature id=34
+2025-10-27T15:01:15.399+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : 😴 Resting creature 34 by user antoni@156.cat
+2025-10-27T15:01:15.419+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 34 rested. Current health: 110
+2025-10-27T15:01:15.423+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : Creature rested id=34, newHealth=110
+2025-10-27T15:01:15.448+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : Fetching all creatures for user antoni@156.cat
+2025-10-27T15:01:15.448+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=15 (from DB)
+2025-10-27T15:01:15.452+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : User antoni@156.cat requesting creature details id=34
+2025-10-27T15:01:15.452+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=34, owner=antoni@156.cat
+2025-10-27T15:01:15.461+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : User antoni@156.cat has 1 creatures
+2025-10-27T15:01:19.251+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : User antoni@156.cat training creature id=34
+2025-10-27T15:01:19.259+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.p.service.impl.CreatureServiceImpl   : 🏋️ Training creature 34 by user antoni@156.cat
+2025-10-27T15:01:19.288+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 34 trained. New level: 1
+2025-10-27T15:01:19.318+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : Creature trained id=34, level=1, XP=10
+2025-10-27T15:01:19.357+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : User antoni@156.cat requesting creature details id=34
+2025-10-27T15:01:19.358+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : Fetching all creatures for user antoni@156.cat
+2025-10-27T15:01:19.358+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=34, owner=antoni@156.cat
+2025-10-27T15:01:19.360+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=15 (from DB)
+2025-10-27T15:01:19.378+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : User antoni@156.cat has 1 creatures
+2025-10-27T15:02:04.573+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : User antoni@156.cat training creature id=34
+2025-10-27T15:02:04.573+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : 🏋️ Training creature 34 by user antoni@156.cat
+2025-10-27T15:02:04.580+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 34 trained. New level: 1
+2025-10-27T15:02:04.592+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : Creature trained id=34, level=1, XP=20
+2025-10-27T15:02:04.610+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : Fetching all creatures for user antoni@156.cat
+2025-10-27T15:02:04.608+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : User antoni@156.cat requesting creature details id=34
+2025-10-27T15:02:04.610+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=34, owner=antoni@156.cat
+2025-10-27T15:02:04.610+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=15 (from DB)
+2025-10-27T15:02:04.617+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : User antoni@156.cat has 1 creatures
+2025-10-27T15:02:10.988+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : User antoni@156.cat training creature id=34
+2025-10-27T15:02:10.990+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.p.service.impl.CreatureServiceImpl   : 🏋️ Training creature 34 by user antoni@156.cat
+2025-10-27T15:02:11.003+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 34 trained. New level: 1
+2025-10-27T15:02:11.020+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : Creature trained id=34, level=1, XP=30
+2025-10-27T15:02:11.033+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : Fetching all creatures for user antoni@156.cat
+2025-10-27T15:02:11.033+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : User antoni@156.cat requesting creature details id=34
+2025-10-27T15:02:11.033+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=34, owner=antoni@156.cat
+2025-10-27T15:02:11.033+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=15 (from DB)
+2025-10-27T15:02:11.039+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : User antoni@156.cat has 1 creatures
+2025-10-27T15:14:54.394+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : Fetching all creatures for user antoni@156.cat
+2025-10-27T15:14:54.400+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : User antoni@156.cat has 1 creatures
+2025-10-27T15:16:16.854+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.AuthController       : Login attempt email=admin@shire.me
+2025-10-27T15:16:16.971+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.AuthController       : Login success email=admin@shire.me
+2025-10-27T15:16:25.156+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:16:25.156+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:16:25.165+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:16:30.804+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=4
+2025-10-27T15:16:30.804+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=4, owner=admin@shire.me
+2025-10-27T15:16:36.514+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : User admin@shire.me resting creature id=4
+2025-10-27T15:16:36.514+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.p.service.impl.CreatureServiceImpl   : 😴 Resting creature 4 by user admin@shire.me
+2025-10-27T15:16:36.527+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 4 rested. Current health: 127
+2025-10-27T15:16:36.544+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : Creature rested id=4, newHealth=127
+2025-10-27T15:16:36.575+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:16:36.575+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=4
+2025-10-27T15:16:36.575+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:16:36.575+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=4, owner=admin@shire.me
+2025-10-27T15:16:36.589+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:16:41.402+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : User admin@shire.me training creature id=4
+2025-10-27T15:16:41.404+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : 🏋️ Training creature 4 by user admin@shire.me
+2025-10-27T15:16:41.419+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 4 trained. New level: 4
+2025-10-27T15:16:41.435+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : Creature trained id=4, level=4, XP=70
+2025-10-27T15:16:41.464+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:16:41.464+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=4
+2025-10-27T15:16:41.471+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=4, owner=admin@shire.me
+2025-10-27T15:16:41.471+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:16:41.483+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:16:43.010+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:16:43.011+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:17:09.143+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : User admin@shire.me resolving combat for creature id=4, damageReceived=61, won=true
+2025-10-27T15:17:09.143+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : User admin@shire.me resolving combat for creature id=24, damageReceived=125, won=false
+2025-10-27T15:17:09.143+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.p.service.impl.CreatureServiceImpl   : ⚔️ Resolving combat for creature 4 (won: true)
+2025-10-27T15:17:09.143+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.p.service.impl.CreatureServiceImpl   : ⚔️ Resolving combat for creature 24 (won: false)
+2025-10-27T15:17:09.161+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.p.service.impl.CreatureServiceImpl   : ✅ Combat resolved for creature 4 (Health: 150)
+2025-10-27T15:17:09.162+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.p.service.impl.CreatureServiceImpl   : ✅ Combat resolved for creature 24 (Health: 0)
+2025-10-27T15:17:09.173+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : Combat resolved for creature id=4, newHealth=150, newXP=0
+2025-10-27T15:17:09.186+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : Combat resolved for creature id=24, newHealth=0, newXP=30
+2025-10-27T15:17:09.222+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:17:09.222+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:17:09.225+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:17:09.225+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:17:09.240+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:17:09.241+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:17:09.258+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:17:09.258+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:17:09.258+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:17:09.258+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:17:20.064+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : User admin@shire.me resting creature id=4
+2025-10-27T15:17:20.064+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.p.service.impl.CreatureServiceImpl   : 😴 Resting creature 4 by user admin@shire.me
+2025-10-27T15:17:20.074+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 4 rested. Current health: 150
+2025-10-27T15:17:20.074+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : Creature rested id=4, newHealth=150
+2025-10-27T15:17:20.102+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:17:20.102+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=4
+2025-10-27T15:17:20.102+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=4, owner=admin@shire.me
+2025-10-27T15:17:20.104+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:17:20.111+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:17:25.642+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=24
+2025-10-27T15:17:25.642+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.p.service.impl.CreatureServiceImpl   : 🔍 Fetching creature by ID 24 (from DB)
+2025-10-27T15:17:25.654+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=24, owner=admin@shire.me
+2025-10-27T15:17:28.631+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.CreatureController   : User admin@shire.me resting creature id=24
+2025-10-27T15:17:28.632+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.p.service.impl.CreatureServiceImpl   : 😴 Resting creature 24 by user admin@shire.me
+2025-10-27T15:17:28.657+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 24 rested. Current health: 30
+2025-10-27T15:17:28.681+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.CreatureController   : Creature rested id=24, newHealth=30
+2025-10-27T15:17:28.706+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=24
+2025-10-27T15:17:28.709+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=24, owner=admin@shire.me
+2025-10-27T15:17:28.715+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:17:28.718+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:17:28.733+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:17:30.055+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=28
+2025-10-27T15:17:30.056+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : 🔍 Fetching creature by ID 28 (from DB)
+2025-10-27T15:17:30.064+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=28, owner=admin@shire.me
+2025-10-27T15:17:33.061+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.pets.controller.CreatureController   : User admin@shire.me resting creature id=28
+2025-10-27T15:17:33.068+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.p.service.impl.CreatureServiceImpl   : 😴 Resting creature 28 by user admin@shire.me
+2025-10-27T15:17:33.084+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 28 rested. Current health: 30
+2025-10-27T15:17:33.102+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-9] c.t.pets.controller.CreatureController   : Creature rested id=28, newHealth=30
+2025-10-27T15:17:33.126+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:17:33.126+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=28
+2025-10-27T15:17:33.126+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=28, owner=admin@shire.me
+2025-10-27T15:17:33.126+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:17:33.138+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:17:34.634+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:17:34.634+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:17:53.436+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : User admin@shire.me resolving combat for creature id=28, damageReceived=0, won=true
+2025-10-27T15:17:53.437+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : ⚔️ Resolving combat for creature 28 (won: true)
+2025-10-27T15:17:53.437+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : User admin@shire.me resolving combat for creature id=24, damageReceived=30, won=false
+2025-10-27T15:17:53.437+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.p.service.impl.CreatureServiceImpl   : ⚔️ Resolving combat for creature 24 (won: false)
+2025-10-27T15:17:53.444+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : ✅ Combat resolved for creature 28 (Health: 30)
+2025-10-27T15:17:53.444+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.p.service.impl.CreatureServiceImpl   : ✅ Combat resolved for creature 24 (Health: 0)
+2025-10-27T15:17:53.462+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : Combat resolved for creature id=28, newHealth=30, newXP=30
+2025-10-27T15:17:53.466+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : Combat resolved for creature id=24, newHealth=0, newXP=30
+2025-10-27T15:17:53.505+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:17:53.505+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:17:53.508+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:17:53.508+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:17:53.552+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:17:53.554+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:17:53.571+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:17:53.571+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:17:53.571+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:17:53.575+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:18:07.925+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : User admin@shire.me resolving combat for creature id=28, damageReceived=0, won=true
+2025-10-27T15:18:07.927+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : ⚔️ Resolving combat for creature 28 (won: true)
+2025-10-27T15:18:07.927+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : User admin@shire.me resolving combat for creature id=24, damageReceived=18, won=false
+2025-10-27T15:18:07.930+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.p.service.impl.CreatureServiceImpl   : ⚔️ Resolving combat for creature 24 (won: false)
+2025-10-27T15:18:07.936+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : ✅ Combat resolved for creature 28 (Health: 30)
+2025-10-27T15:18:07.936+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.p.service.impl.CreatureServiceImpl   : ✅ Combat resolved for creature 24 (Health: 0)
+2025-10-27T15:18:07.936+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : Combat resolved for creature id=24, newHealth=0, newXP=30
+2025-10-27T15:18:07.950+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : Combat resolved for creature id=28, newHealth=30, newXP=60
+2025-10-27T15:18:07.955+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:18:07.959+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:18:07.961+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:18:07.961+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:18:07.977+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:18:07.977+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:18:07.991+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:18:07.991+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:18:07.991+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:18:07.991+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:18:15.958+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : User admin@shire.me resting creature id=24
+2025-10-27T15:18:15.961+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.p.service.impl.CreatureServiceImpl   : 😴 Resting creature 24 by user admin@shire.me
+2025-10-27T15:18:15.972+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 24 rested. Current health: 30
+2025-10-27T15:18:15.989+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : Creature rested id=24, newHealth=30
+2025-10-27T15:18:16.019+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:18:16.021+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=24
+2025-10-27T15:18:16.021+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:18:16.021+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=24, owner=admin@shire.me
+2025-10-27T15:18:16.031+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:18:20.647+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : User admin@shire.me resting creature id=28
+2025-10-27T15:18:20.651+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.p.service.impl.CreatureServiceImpl   : 😴 Resting creature 28 by user admin@shire.me
+2025-10-27T15:18:20.668+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 28 rested. Current health: 60
+2025-10-27T15:18:20.683+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-10] c.t.pets.controller.CreatureController   : Creature rested id=28, newHealth=60
+2025-10-27T15:18:20.719+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:18:20.721+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:18:20.726+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=28
+2025-10-27T15:18:20.732+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-1] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=28, owner=admin@shire.me
+2025-10-27T15:18:20.744+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:18:31.069+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : User admin@shire.me resting creature id=28
+2025-10-27T15:18:31.072+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.p.service.impl.CreatureServiceImpl   : 😴 Resting creature 28 by user admin@shire.me
+2025-10-27T15:18:31.087+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 28 rested. Current health: 90
+2025-10-27T15:18:31.102+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : Creature rested id=28, newHealth=90
+2025-10-27T15:18:31.127+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:18:31.127+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=28
+2025-10-27T15:18:31.127+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-7] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=28, owner=admin@shire.me
+2025-10-27T15:18:31.127+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:18:31.137+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:18:44.351+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.CreatureController   : User admin@shire.me resting creature id=28
+2025-10-27T15:18:44.351+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.p.service.impl.CreatureServiceImpl   : 😴 Resting creature 28 by user admin@shire.me
+2025-10-27T15:18:44.363+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.p.service.impl.CreatureServiceImpl   : ✅ Creature 28 rested. Current health: 110
+2025-10-27T15:18:44.376+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.CreatureController   : Creature rested id=28, newHealth=110
+2025-10-27T15:18:44.406+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : Fetching all creatures for user admin@shire.me
+2025-10-27T15:18:44.406+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : User admin@shire.me requesting creature details id=28
+2025-10-27T15:18:44.408+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-6] c.t.pets.controller.CreatureController   : Creature retrieved successfully id=28, owner=admin@shire.me
+2025-10-27T15:18:44.408+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=2 (from DB)
+2025-10-27T15:18:44.418+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.CreatureController   : User admin@shire.me has 6 creatures
+2025-10-27T15:20:42.374+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.AdminController      : Admin requested list of all users
+2025-10-27T15:20:42.404+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.AdminController      : Found 7 users in database
+2025-10-27T15:20:58.088+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.AdminController      : Admin fetching creatures for user ID=11
+2025-10-27T15:20:58.088+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=11 (from DB)
+2025-10-27T15:20:58.100+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.AdminController      : Found 0 creatures for user ID=11
+2025-10-27T15:20:59.513+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.AdminController      : Admin fetching creatures for user ID=10
+2025-10-27T15:20:59.519+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=10 (from DB)
+2025-10-27T15:20:59.530+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.AdminController      : Found 2 creatures for user ID=10
+2025-10-27T15:21:00.447+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.AdminController      : Admin fetching creatures for user ID=13
+2025-10-27T15:21:00.447+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=13 (from DB)
+2025-10-27T15:21:00.465+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-5] c.t.pets.controller.AdminController      : Found 2 creatures for user ID=13
+2025-10-27T15:21:01.169+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.AdminController      : Admin fetching creatures for user ID=15
+2025-10-27T15:21:01.172+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=15 (from DB)
+2025-10-27T15:21:01.192+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-3] c.t.pets.controller.AdminController      : Found 1 creatures for user ID=15
+2025-10-27T15:21:03.227+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.AdminController      : Admin fetching creatures for user ID=7
+2025-10-27T15:21:03.227+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=7 (from DB)
+2025-10-27T15:21:03.245+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-2] c.t.pets.controller.AdminController      : Found 1 creatures for user ID=7
+2025-10-27T15:21:04.310+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.AdminController      : Admin fetching creatures for user ID=2
+2025-10-27T15:21:04.314+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-8] c.t.pets.controller.AdminController      : Found 6 creatures for user ID=2
+2025-10-27T15:21:04.902+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.AdminController      : Admin fetching creatures for user ID=1
+2025-10-27T15:21:04.904+01:00  INFO 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.p.service.impl.CreatureServiceImpl   : 📥 Fetching creatures for userId=1 (from DB)
+2025-10-27T15:21:04.922+01:00 DEBUG 22408 --- [tolkien-virtual-pets-api] [http-nio-8080-exec-4] c.t.pets.controller.AdminController      : Found 0 creatures for user ID=1

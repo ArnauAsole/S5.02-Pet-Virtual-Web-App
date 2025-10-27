@@ -30,12 +30,12 @@ export function CreatureDetailsModal({ creature, open, onOpenChange }: CreatureD
         <div className="space-y-6">
           {/* Creature Image and Basic Info */}
           <div className="flex flex-col items-center gap-4">
-            <div className="relative h-48 w-48 rounded-lg overflow-hidden ring-4 ring-primary/20">
+            <div className="relative h-64 w-64 rounded-lg overflow-hidden ring-4 ring-primary/20 bg-muted/20">
               <Image
                 src={creature.imageUrl || "/placeholder.svg"}
                 alt={creature.name}
                 fill
-                className="object-cover"
+                className="object-contain p-2"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement
                   target.src = "/mystical-griffon.png"

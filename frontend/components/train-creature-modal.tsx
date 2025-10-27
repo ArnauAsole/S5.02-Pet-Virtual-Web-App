@@ -91,13 +91,25 @@ export function TrainCreatureModal({ open, onOpenChange, creatureId }: TrainCrea
         </DialogHeader>
 
         <div className="space-y-4 py-4">
+          {training && (
+            <div className="relative w-full h-64 rounded-lg overflow-hidden mb-4">
+              <Image
+                src="/knight-training-with-sword-and-armor.jpg"
+                alt="Entrenamiento de combate"
+                fill
+                className="object-contain"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+            </div>
+          )}
+
           <div className="flex items-center gap-3">
-            <div className="relative h-16 w-16 rounded-full overflow-hidden bg-primary/10">
+            <div className="relative h-20 w-20 rounded-full overflow-hidden bg-primary/10">
               <Image
                 src={imageUrl || "/placeholder.svg"}
                 alt={creature.name}
                 fill
-                className="object-cover"
+                className="object-contain p-1"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement
                   target.src = "/mystical-griffon.png"
